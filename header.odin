@@ -27,6 +27,8 @@ Entity :: struct {
 	position : rl.Vector2,
 	cell_x : int,
 	cell_y : int,
+	target_cell_x : int,
+	target_cell_y : int,
 	sprite_size: f32,
 	collision_size: f32,
 	is_trigger : bool,
@@ -34,6 +36,8 @@ Entity :: struct {
 
 	//characters
 	speed : f32,
+	moving : bool,
+	move_lerp : f32,
 	sprite : rl.Texture2D,
 	sprite_idle : []Anim_Frame,
 	sprite_walk : []Anim_Frame,

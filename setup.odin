@@ -1,6 +1,7 @@
 package game
 
 import rl "vendor:raylib"
+import "core:math"
 
 entity_create :: proc(kind: Entity_Kind) -> ^Entity {
 	new_index : int = -1
@@ -51,7 +52,7 @@ setup_player :: proc(entity: ^Entity) {
 	entity.sprite_size = 16
 	entity.collision_size = 14
 	entity.color = rl.WHITE
-	entity.speed = 50
+	entity.speed = 3
 	entity.is_idle = true
 
 	entity.update = proc(entity: ^Entity) {
@@ -61,20 +62,42 @@ setup_player :: proc(entity: ^Entity) {
 
 		movement : rl.Vector2
 
-		if (rl.IsKeyDown(rl.KeyboardKey.S)) {
-			movement.y -= entity.speed * rl.GetFrameTime()
-		}
-		else if (rl.IsKeyDown(rl.KeyboardKey.Z)) {
-			movement.y += entity.speed * rl.GetFrameTime()
-		}
-		else if (rl.IsKeyDown(rl.KeyboardKey.D)) {
-			movement.x += entity.speed * rl.GetFrameTime()
-		}
-		else if (rl.IsKeyDown(rl.KeyboardKey.Q)) {
-			movement.x -= entity.speed * rl.GetFrameTime()
-		}
+		if (!entity.moving)
+		{
+			entity.move_lerp = 0
+			entity.target_cell_x = entity.cell_x
+			entity.target_cell_y = entity.cell_y
 
-		entity.position += movement
+			if (rl.IsKeyDown(rl.KeyboardKey.S)) {
+				entity.target_cell_y = entity.cell_y - 1
+				entity.moving = true
+			}
+			else if (rl.IsKeyDown(rl.KeyboardKey.Z)) {
+				entity.target_cell_y = entity.cell_y + 1
+				entity.moving = true
+			}
+			else if (rl.IsKeyDown(rl.KeyboardKey.D)) {
+				entity.target_cell_x = entity.cell_x + 1
+				entity.moving = true
+			}
+			else if (rl.IsKeyDown(rl.KeyboardKey.Q)) {
+				entity.target_cell_x = entity.cell_x - 1
+				entity.moving = true
+			}
+		}
+		else
+		{
+			entity.move_lerp += rl.GetFrameTime() * entity.speed
+			if (entity.move_lerp > 1) {
+				entity.move_lerp = 1
+				entity.moving = false
+				entity.cell_x = entity.target_cell_x
+				entity.cell_y = entity.target_cell_y
+			}
+			entity.position.x = math.lerp(f32(entity.cell_x * 16), f32(entity.target_cell_x * 16), entity.move_lerp)
+			entity.position.y = math.lerp(f32(entity.cell_y * 16), f32(entity.target_cell_y * 16), entity.move_lerp)
+		}
+		
 		if movement.x == 0 && movement.y == 0 {
 			if !entity.is_idle {
 				entity.is_idle = true

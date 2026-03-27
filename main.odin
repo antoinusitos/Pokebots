@@ -45,6 +45,8 @@ main :: proc() {
     log_error("init done.")
 
     player = entity_create(.player)
+    player.position.x = 0
+    player.position.y = 0
     player.direction = .down
 
     player.sprite_idle = { 
@@ -180,7 +182,6 @@ transition :: proc() {
     color := rl.BLACK
     if game_state.time_transition < TRANSITION_TIME / 2 {
         color.a = u8(game_state.time_transition / (TRANSITION_TIME / 2) * 255)
-        log_error(color.a)
         rl.DrawRectangleRec({0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}, color)
     }
     else {
