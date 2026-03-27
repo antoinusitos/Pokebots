@@ -1,0 +1,44 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "sans titre.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "5 colors (transparent + filled roofs).tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "sans titre.tmx": {
+            "scale": 2.830208333333333,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 251.7482517482518,
+                "y": 158.99889584100112
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/thebo/Downloads/12x16-retro-rpg-topdown-npc-spritesheet",
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": "3",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "5 colors (transparent + filled roofs).tsx",
+        "sans titre.tmx",
+        "5 colors (transparent + filled roofs).tsx"
+    ],
+    "project": "sans titre.tiled-project",
+    "recentFiles": [
+        "5 colors (transparent + filled roofs).tsx",
+        "sans titre.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
