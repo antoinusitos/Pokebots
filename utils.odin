@@ -366,3 +366,27 @@ snap :: proc(v: rl.Vector2) -> rl.Vector2 {
         f32(int(v.y)),
     }
 }
+
+transition :: proc() {
+    game_state.time_transition += rl.GetFrameTime()
+    color := rl.BLACK
+    if game_state.time_transition < TRANSITION_TIME / 2 {
+        color.a = u8(game_state.time_transition / (TRANSITION_TIME / 2) * 255)
+        rl.DrawRectangleRec({0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}, color)
+    }
+    else {
+        if !game_state.transition_done {
+            game_state.transition_done = true
+            player.position = {game_state.current_door.target_x * 16, game_state.current_door.target_y * 16}
+            game_state.current_door = nil
+        }
+        color.a = u8( (1 - game_state.time_transition / (TRANSITION_TIME / 2)) * 255)
+        rl.DrawRectangleRec({0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}, color)
+
+        if game_state.time_transition >= TRANSITION_TIME {
+            game_state.time_transition = 0
+            game_state.transitionning = false
+            game_state.transition_done = false
+        }
+    }
+}

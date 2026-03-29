@@ -11,6 +11,11 @@ Game_State :: struct {
 	entity_top_count: u64,
 	world_name: string,
 	player_handle: Entity_Handle,
+	screen_type : Screen_Type,
+	input_type : Input_Type,
+	cells : [dynamic]Cell,
+	world_width : int,
+	world_height : int,
 
 	transitionning : bool,
 	time_transition : f32,
@@ -49,6 +54,7 @@ Entity :: struct {
 	anim_time : f32,
 	is_idle : bool,
 	direction : Direction,
+	robot : Robot,
 
 	//door
 	target_x : f32,
@@ -70,6 +76,23 @@ Entity_Kind :: enum {
 	door,
 }
 
+Robot_Part :: struct {
+	name : string, 
+	capacity : int,
+	percent : int,
+}
+
+Robot :: struct {
+	hp : int,
+	battery : Robot_Part,
+	head : Robot_Part,
+	torso : Robot_Part,
+	left_arm : Robot_Part,
+	right_arm : Robot_Part,
+	left_leg : Robot_Part,
+	right_leg : Robot_Part,
+}
+
 Direction :: enum {
 	top,
 	down,
@@ -80,6 +103,24 @@ Direction :: enum {
 Anim_Frame :: struct {
 	sprite : rl.Texture2D,
 	length : f32,
+}
+
+Screen_Type :: enum {
+	game,
+	combat,
+	menu,
+}
+
+Input_Type :: enum {
+	game,
+	dialog,
+	combat
+}
+
+Cell :: struct {
+	cell_x : int,
+	cell_y : int,
+	entity : ^Entity
 }
 
 log_error :: fmt.println

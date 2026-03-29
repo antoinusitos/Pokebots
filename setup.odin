@@ -54,6 +54,16 @@ setup_player :: proc(entity: ^Entity) {
 	entity.color = rl.WHITE
 	entity.speed = 3
 	entity.is_idle = true
+	entity.robot = {
+		hp = 100,
+		battery = battery_test,
+		head = head_test,
+		torso = torso_test,
+		left_arm = arm_test,
+		right_arm = arm_test,
+		left_leg = leg_test,
+		right_leg = leg_test
+	}
 
 	entity.update = proc(entity: ^Entity) {
 		if game_state.transitionning {
@@ -97,6 +107,9 @@ setup_player :: proc(entity: ^Entity) {
 			entity.position.x = math.lerp(f32(entity.cell_x * 16), f32(entity.target_cell_x * 16), entity.move_lerp)
 			entity.position.y = math.lerp(f32(entity.cell_y * 16), f32(entity.target_cell_y * 16), entity.move_lerp)
 		}
+
+		movement.y = f32(entity.target_cell_y - entity.cell_y)		
+		movement.x = f32(entity.target_cell_x - entity.cell_x)	
 		
 		if movement.x == 0 && movement.y == 0 {
 			if !entity.is_idle {
@@ -125,8 +138,6 @@ setup_player :: proc(entity: ^Entity) {
 				entity.sprite = entity.sprite_walk_right[0].sprite
 				break
 			}
-
-			//entity.sprite = entity.sprite_idle[entity.anim_frame].sprite
 		}
 		else {
 			if entity.is_idle {

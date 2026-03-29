@@ -9,3 +9,33 @@ DRAW_HEIGHT :: 180 // 11
 MAX_ENTITIES :: 1024
 
 TRANSITION_TIME :: 1.0
+
+battery_test :: Robot_Part { 
+	name = "battery_test",
+	capacity = 400,
+	percent = 100
+}
+
+head_test :: Robot_Part { 
+	name = "head_test",
+	capacity = 80,
+	percent = 100
+}
+
+torso_test :: Robot_Part { 
+	name = "torso_test",
+	capacity = 80,
+	percent = 100
+}
+
+arm_test :: Robot_Part { 
+	name = "arm_test",
+	capacity = 80,
+	percent = 100
+}
+
+leg_test :: Robot_Part { 
+	name = "leg_test",
+	capacity = 80,
+	percent = 100
+}

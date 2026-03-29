@@ -69,6 +69,18 @@ main :: proc() {
         { sprite = rl.LoadTexture("Assets/player_walk_right2.png"), length = 0.15}
     }
 
+    game_state.world_width = 20
+    game_state.world_height = 10
+
+    for x := 0; x < game_state.world_width; x += 1 {
+        for y := 0; y < game_state.world_height; y += 1 {
+            append(&game_state.cells, Cell{cell_x = x, cell_y = y})
+        }
+    }
+
+    game_state.screen_type = .game
+    game_state.input_type = .game
+
 	for !game_state.want_to_quit && !rl.WindowShouldClose() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.BLACK)
@@ -128,8 +140,8 @@ draw :: proc() {
     rl.BeginMode2D(camera)
 
     // floor
-    for x := 0; x < 20; x += 1 {
-    	for y := 0; y < 11; y += 1 {
+    for x := 0; x < game_state.world_width; x += 1 {
+    	for y := 0; y < game_state.world_height; y += 1 {
     		rl.DrawTextureV(floor_sprite, {f32(x * 16), f32(y * 16)}, rl.WHITE)
     	}
     }
@@ -175,28 +187,4 @@ draw :: proc() {
     }
 
     rl.EndDrawing()
-}
-
-transition :: proc() {
-    game_state.time_transition += rl.GetFrameTime()
-    color := rl.BLACK
-    if game_state.time_transition < TRANSITION_TIME / 2 {
-        color.a = u8(game_state.time_transition / (TRANSITION_TIME / 2) * 255)
-        rl.DrawRectangleRec({0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}, color)
-    }
-    else {
-        if !game_state.transition_done {
-            game_state.transition_done = true
-            player.position = {game_state.current_door.target_x * 16, game_state.current_door.target_y * 16}
-            game_state.current_door = nil
-        }
-        color.a = u8( (1 - game_state.time_transition / (TRANSITION_TIME / 2)) * 255)
-        rl.DrawRectangleRec({0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}, color)
-
-        if game_state.time_transition >= TRANSITION_TIME {
-            game_state.time_transition = 0
-            game_state.transitionning = false
-            game_state.transition_done = false
-        }
-    }
 }
