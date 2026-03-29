@@ -120,7 +120,48 @@ Input_Type :: enum {
 Cell :: struct {
 	cell_x : int,
 	cell_y : int,
+	sprite_index : int,
+	sprite_pos_x : f32,
+	sprite_pos_y : f32,
+	blocker_sprite_index : int,
+	blocker_sprite_pos_x : f32,
+	blocker_sprite_pos_y : f32,
 	entity : ^Entity
+}
+
+Map_Layer :: struct {
+	data : []int,
+    height : int,
+    id : int,
+    name : string,
+    opacity : int,
+    type : string,
+    visible : bool,
+    width : int,
+    x : int,
+    y : int
+}
+
+Tile_Set :: struct {
+    firstgid : int,
+    source : string
+}
+
+Map_Info :: struct {
+	compressionlevel : int,
+    infinite : bool,
+    layers : []Map_Layer,
+    nextlayerid : int,
+    nextobjectid : int,
+    orientation : string,
+    renderorder : string,
+    tiledversion : string,
+    tileheight : int,
+    tilesets : []Tile_Set,
+    tilewidth : int,
+    type : string,
+    version : string,
+    width : int
 }
 
 log_error :: fmt.println
@@ -137,3 +178,5 @@ target : rl.RenderTexture2D
 
 floor_sprite : rl.Texture2D
 door_sprite : rl.Texture2D
+
+atlas : rl.Texture2D

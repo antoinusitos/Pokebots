@@ -7,6 +7,7 @@ import "core:fmt"
 import "core:os"
 import "core:strings"
 import "core:strconv"
+import "core:encoding/json"
 
 Button_Type :: enum {
 	once,
@@ -334,6 +335,23 @@ read_map :: proc(map_name : string) -> [dynamic]string {
     }
 
     return return_lines
+}
+
+map_from_file :: proc(filepath : string) -> Map_Info {
+    map_info: Map_Info
+
+    if json_data, ok := os.read_entire_file(filepath, context.temp_allocator); ok {
+        if json.unmarshal(json_data, &map_info) == nil {
+            // my_struct now contains
+            // the data from my_struct_file.
+        } else {
+            log_error("Failed to unmarshal JSON")
+        }
+    } else {
+        log_error("Failed to read my_struct_file")
+    }
+
+	return map_info
 }
 
 collide :: proc(entity_a : ^Entity, entity_b : ^Entity) -> int {
