@@ -41,7 +41,7 @@ entity_destroy :: proc(entity: ^Entity) {
 }
 
 default_draw_based_on_entity_data :: proc(entity: ^Entity) {
-	drawPos := snap({entity.position.x, -entity.position.y})
+	drawPos := snap({entity.position.x, entity.position.y})
 
 	rl.DrawTextureV(entity.sprite, drawPos, entity.color)
 	//rl.DrawRectangle(i32(drawPos.x), i32(drawPos.y), i32(entity.sprite_size), i32(entity.sprite_size), entity.color)
@@ -79,11 +79,11 @@ setup_player :: proc(entity: ^Entity) {
 			entity.target_cell_y = entity.cell_y
 
 			if (rl.IsKeyDown(rl.KeyboardKey.S)) {
-				entity.target_cell_y = entity.cell_y - 1
+				entity.target_cell_y = entity.cell_y + 1
 				entity.moving = true
 			}
 			else if (rl.IsKeyDown(rl.KeyboardKey.Z)) {
-				entity.target_cell_y = entity.cell_y + 1
+				entity.target_cell_y = entity.cell_y - 1
 				entity.moving = true
 			}
 			else if (rl.IsKeyDown(rl.KeyboardKey.D)) {
@@ -93,6 +93,10 @@ setup_player :: proc(entity: ^Entity) {
 			else if (rl.IsKeyDown(rl.KeyboardKey.Q)) {
 				entity.target_cell_x = entity.cell_x - 1
 				entity.moving = true
+			}
+
+			if game_state.cells[entity.target_cell_y * TILE_WIDTH + entity.target_cell_x].blocked {
+				log_error("blocked")
 			}
 		}
 		else

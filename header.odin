@@ -126,6 +126,7 @@ Cell :: struct {
 	blocker_sprite_index : int,
 	blocker_sprite_pos_x : f32,
 	blocker_sprite_pos_y : f32,
+	blocked : bool,
 	entity : ^Entity
 }
 

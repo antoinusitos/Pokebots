@@ -60,6 +60,13 @@ main :: proc() {
                 cell.sprite_pos_y = f32(index_y * 16)
             }
             if cell.blocker_sprite_index != -1 {
+                if cell.blocker_sprite_index == DOOR_SPRITE_INDEX {
+                    log_error("found")
+                }
+                else {
+                    cell.blocked = true
+                    log_error("blocker ", x, y)
+                }
                 index_x := cell.blocker_sprite_index % ATLAS_WIDTH
                 cell.blocker_sprite_pos_x = f32(index_x * 16)
                 index_y := (cell.blocker_sprite_index - index_x) / ATLAS_HEIGHT
@@ -73,8 +80,8 @@ main :: proc() {
     log_error("init done.")
 
     player = entity_create(.player)
-    player.position.x = 0
-    player.position.y = -16
+    player.cell_x = 0
+    player.cell_y = 0
     player.direction = .down
 
     player.sprite_idle = { 
@@ -126,7 +133,7 @@ update :: proc() {
         player.position = prev_pos
     } 
 
-	camera.target = snap({player.position.x, -player.position.y})
+	camera.target = snap({player.position.x, player.position.y})
 }
 
 draw :: proc() {
