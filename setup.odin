@@ -96,7 +96,9 @@ setup_player :: proc(entity: ^Entity) {
 			}
 
 			if game_state.cells[entity.target_cell_y * TILE_WIDTH + entity.target_cell_x].blocked {
-				log_error("blocked")
+				entity.target_cell_x = entity.cell_x
+				entity.target_cell_y = entity.cell_y
+				entity.moving = false
 			}
 		}
 		else
@@ -110,6 +112,7 @@ setup_player :: proc(entity: ^Entity) {
 			}
 			entity.position.x = math.lerp(f32(entity.cell_x * 16), f32(entity.target_cell_x * 16), entity.move_lerp)
 			entity.position.y = math.lerp(f32(entity.cell_y * 16), f32(entity.target_cell_y * 16), entity.move_lerp)
+			log_error(entity.position.y)
 		}
 
 		movement.y = f32(entity.target_cell_y - entity.cell_y)		
@@ -149,12 +152,12 @@ setup_player :: proc(entity: ^Entity) {
 				entity.anim_frame = 0
 			}
 			entity.anim_time += rl.GetFrameTime()
-			if (movement.y > 0)
+			if (movement.y < 0)
 			{
 				entity.direction = .top
 				entity.sprite_walk_current = entity.sprite_walk_top
 			}
-			else if (movement.y < 0)
+			else if (movement.y > 0)
 			{
 				entity.direction = .down
 				entity.sprite_walk_current = entity.sprite_walk

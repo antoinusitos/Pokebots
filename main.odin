@@ -28,8 +28,8 @@ main :: proc() {
 	}
 
     door_test = entity_create(.door)
-    door_test.position = {3 * door_test.sprite_size, -3 * door_test.sprite_size}
-    door_test.target_x = 5
+    door_test.position = {5 * door_test.sprite_size, 6 * door_test.sprite_size}
+    door_test.target_x = 7
     door_test.target_y = -33
 
     door_test_2 = entity_create(.door)
@@ -46,7 +46,8 @@ main :: proc() {
     game_state.world_width = TILE_WIDTH
     game_state.world_height = TILE_HEIGHT
 
-    for y := game_state.world_height - 1; y >= 0; y -= 1 {
+    for y := 0; y < game_state.world_height; y += 1 {
+    //for y := game_state.world_height - 1; y >= 0; y -= 1 {
         for x := 0; x < game_state.world_width; x += 1 {
             cell := Cell{
                 cell_x = x, 
@@ -80,8 +81,9 @@ main :: proc() {
     log_error("init done.")
 
     player = entity_create(.player)
-    player.cell_x = 0
-    player.cell_y = 0
+    player.cell_x = 1
+    player.cell_y = 1
+    player.position = {f32(player.cell_x)  * 16, f32(player.cell_y) * 16}
     player.direction = .down
 
     player.sprite_idle = { 
