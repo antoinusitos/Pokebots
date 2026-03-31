@@ -32,22 +32,21 @@ main :: proc() {
     door_test.target_x = 7
     door_test.target_y = -33
 
-    door_test_2 = entity_create(.door)
-    door_test_2.position = {5 * door_test_2.sprite_size, -34 * door_test_2.sprite_size}
-    door_test_2.target_x = 3
-    door_test_2.target_y = -4
-
     floor_sprite = rl.LoadTexture("Assets/test_floor.png")
     door_sprite = rl.LoadTexture("Assets/door.png")
     atlas = rl.LoadTexture("Assets/atlas.png")
    
-    map_info := map_from_file("Assets/lvl_intro.tmj")
+    load_level("Assets/lvl_intro.tmj", &main_world)
+    load_level("Assets/house1.tmj", &house_1)
 
-    game_state.world_width = TILE_WIDTH
-    game_state.world_height = TILE_HEIGHT
+    game_state.current_scene = &main_world
+
+    /*map_info := map_from_file("Assets/lvl_intro.tmj")
+
+    main_world.world_width = TILE_WIDTH
+    main_world.world_height = TILE_HEIGHT
 
     for y := 0; y < game_state.world_height; y += 1 {
-    //for y := game_state.world_height - 1; y >= 0; y -= 1 {
         for x := 0; x < game_state.world_width; x += 1 {
             cell := Cell{
                 cell_x = x, 
@@ -73,10 +72,10 @@ main :: proc() {
                 index_y := (cell.blocker_sprite_index - index_x) / ATLAS_HEIGHT
                 cell.blocker_sprite_pos_y = f32(index_y * 16)
             }
-            append(&game_state.cells, cell)
+            append(&main_world.cells, cell)
             
         }
-    }
+    }*/
 
     log_error("init done.")
 
@@ -121,6 +120,43 @@ main :: proc() {
 	rl.CloseWindow()
 }
 
+load_level :: proc(level_name : string, scene : ^Scene) {
+    map_info := map_from_file(level_name)
+
+    scene.size_x = map_info.width
+    scene.size_y = map_info.height
+
+    for y := 0; y < scene.size_y; y += 1 {
+        for x := 0; x < scene.size_x ; x += 1 {
+            cell := Cell{
+                cell_x = x, 
+                cell_y = y, 
+                sprite_index = map_info.layers[0].data[y *  scene.size_x + x] - 1, 
+                blocker_sprite_index = map_info.layers[1].data[y *  scene.size_x + x] - 1}
+            if cell.sprite_index != -1 {
+                index_x := cell.sprite_index % ATLAS_WIDTH
+                cell.sprite_pos_x = f32(index_x * 16)
+                index_y := (cell.sprite_index - index_x) / ATLAS_HEIGHT
+                cell.sprite_pos_y = f32(index_y * 16)
+            }
+            if cell.blocker_sprite_index != -1 {
+                if cell.blocker_sprite_index == DOOR_SPRITE_INDEX {
+                    log_error("found")
+                }
+                else {
+                    cell.blocked = true
+                }
+                index_x := cell.blocker_sprite_index % ATLAS_WIDTH
+                cell.blocker_sprite_pos_x = f32(index_x * 16)
+                index_y := (cell.blocker_sprite_index - index_x) / ATLAS_HEIGHT
+                cell.blocker_sprite_pos_y = f32(index_y * 16)
+            }
+            append(&scene.cells, cell)
+            
+        }
+    }
+}
+
 update :: proc() {
 	//log_error("update")
 
@@ -131,9 +167,6 @@ update :: proc() {
     if collide(player, door_test) == 2 {
         player.position = prev_pos
     }
-    if collide(player, door_test_2) == 2 {
-        player.position = prev_pos
-    } 
 
 	camera.target = snap({player.position.x, player.position.y})
 }
@@ -168,12 +201,12 @@ draw :: proc() {
     rl.BeginMode2D(camera)
 
     index_cell := 0
-    for y := 0; y < game_state.world_height - 1; y += 1 {
-        for x := 0; x < game_state.world_width; x += 1 {
-            rl.DrawTextureRec(atlas, {game_state.cells[index_cell].sprite_pos_x, game_state.cells[index_cell].sprite_pos_y, 16, 16}, {f32(game_state.cells[index_cell].cell_x * 16), f32(game_state.cells[index_cell].cell_y * 16)}, rl.WHITE)
+    for y := 0; y < game_state.current_scene.size_y - 1; y += 1 {
+        for x := 0; x < game_state.current_scene.size_x; x += 1 {
+            rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].sprite_pos_x, game_state.current_scene.cells[index_cell].sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
             
-            if game_state.cells[index_cell].blocker_sprite_index != -1 {
-                rl.DrawTextureRec(atlas, {game_state.cells[index_cell].blocker_sprite_pos_x, game_state.cells[index_cell].blocker_sprite_pos_y, 16, 16}, {f32(game_state.cells[index_cell].cell_x * 16), f32(game_state.cells[index_cell].cell_y * 16)}, rl.WHITE)
+            if game_state.current_scene.cells[index_cell].blocker_sprite_index != -1 {
+                rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].blocker_sprite_pos_x, game_state.current_scene.cells[index_cell].blocker_sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
             }
 
             index_cell += 1
@@ -191,7 +224,6 @@ draw :: proc() {
     }
 
     door_test.draw(door_test)
-    door_test_2.draw(door_test_2)
     player.draw(player)
 
     rl.EndMode2D()

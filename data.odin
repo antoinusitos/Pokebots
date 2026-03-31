@@ -6,9 +6,6 @@ WINDOW_HEIGHT :: 1080
 DRAW_WIDTH :: 320 //20
 DRAW_HEIGHT :: 180 // 11
 
-TILE_WIDTH :: 30
-TILE_HEIGHT :: 20
-
 ATLAS_WIDTH :: 64
 ATLAS_HEIGHT :: 64
 
@@ -47,3 +44,4 @@ leg_test :: Robot_Part {
 	capacity = 80,
 	percent = 100
 }
+

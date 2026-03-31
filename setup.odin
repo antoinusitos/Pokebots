@@ -95,7 +95,7 @@ setup_player :: proc(entity: ^Entity) {
 				entity.moving = true
 			}
 
-			if game_state.cells[entity.target_cell_y * TILE_WIDTH + entity.target_cell_x].blocked {
+			if game_state.current_scene.cells[entity.target_cell_y * game_state.current_scene.size_x + entity.target_cell_x].blocked {
 				entity.target_cell_x = entity.cell_x
 				entity.target_cell_y = entity.cell_y
 				entity.moving = false

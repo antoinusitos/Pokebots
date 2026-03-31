@@ -13,9 +13,8 @@ Game_State :: struct {
 	player_handle: Entity_Handle,
 	screen_type : Screen_Type,
 	input_type : Input_Type,
-	cells : [dynamic]Cell,
-	world_width : int,
-	world_height : int,
+
+	current_scene : ^Scene,
 
 	transitionning : bool,
 	time_transition : f32,
@@ -150,6 +149,7 @@ Tile_Set :: struct {
 
 Map_Info :: struct {
 	compressionlevel : int,
+	height : int,
     infinite : bool,
     layers : []Map_Layer,
     nextlayerid : int,
@@ -165,6 +165,13 @@ Map_Info :: struct {
     width : int
 }
 
+Scene :: struct {
+    firstgid : int,
+    size_x : int,
+    size_y : int,
+	cells : [dynamic]Cell,
+}
+
 log_error :: fmt.println
 
 game_state: Game_State
@@ -173,7 +180,6 @@ camera : rl.Camera2D
 
 player : ^Entity
 door_test : ^Entity
-door_test_2 : ^Entity
 
 target : rl.RenderTexture2D 
 
@@ -181,3 +187,6 @@ floor_sprite : rl.Texture2D
 door_sprite : rl.Texture2D
 
 atlas : rl.Texture2D
+
+main_world : Scene
+house_1 : Scene

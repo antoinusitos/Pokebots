@@ -395,7 +395,13 @@ transition :: proc() {
     else {
         if !game_state.transition_done {
             game_state.transition_done = true
-            player.position = {game_state.current_door.target_x * 16, game_state.current_door.target_y * 16}
+            game_state.current_scene = &house_1
+            player.cell_x = 4
+		    player.cell_y = 5
+		    player.moving = false
+		    player.position = {f32(player.cell_x)  * 16, f32(player.cell_y) * 16}
+		    player.direction = .down
+            //player.position = {game_state.current_door.target_x * 16, game_state.current_door.target_y * 16}
             game_state.current_door = nil
         }
         color.a = u8( (1 - game_state.time_transition / (TRANSITION_TIME / 2)) * 255)

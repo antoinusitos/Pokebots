@@ -1,0 +1,56 @@
+{ "compressionlevel":-1,
+ "height":7,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[2121, 2121, 2121, 2121, 2121, 2121, 2121,
+            2121, 2121, 2121, 2121, 2121, 2121, 2121,
+            1999, 1999, 1999, 1999, 1999, 1999, 1999,
+            1999, 1999, 1999, 1999, 1999, 1999, 1999,
+            1999, 1999, 1999, 1999, 1999, 1999, 1999,
+            1999, 1999, 1999, 1999, 1999, 1999, 1999,
+            1999, 1999, 1999, 1999, 1999, 1999, 1999],
+         "height":7,
+         "id":1,
+         "name":"Calque de Tuiles 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":7,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 138, 0,
+            0, 0, 0, 0, 0, 202, 0,
+            0, 0, 0, 0, 0, 266, 0,
+            0, 516, 328, 329, 515, 0, 0,
+            0, 516, 392, 393, 515, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 654, 655, 0, 0],
+         "height":7,
+         "id":2,
+         "name":"Calque de Tuiles 2",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":7,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":3,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":16,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"5 colors (transparent + filled roofs).tsx"
+        }],
+ "tilewidth":16,
+ "type":"map",
+ "version":"1.10",
+ "width":7
+}
