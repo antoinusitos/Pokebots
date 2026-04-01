@@ -56,8 +56,9 @@ Entity :: struct {
 	robot : Robot,
 
 	//door
-	target_x : f32,
-	target_y : f32,
+	target_x : int,
+	target_y : int,
+	scene : ^Scene,
 
 	update : proc(^Entity),
 	on_trigger_enter : proc(self : ^Entity, entity_touching: ^Entity),
@@ -122,9 +123,10 @@ Cell :: struct {
 	sprite_index : int,
 	sprite_pos_x : f32,
 	sprite_pos_y : f32,
-	blocker_sprite_index : int,
-	blocker_sprite_pos_x : f32,
-	blocker_sprite_pos_y : f32,
+	foreground_sprite_index : int,
+	foreground_sprite_pos_x : f32,
+	foreground_sprite_pos_y : f32,
+	blocker_index : int,
 	blocked : bool,
 	entity : ^Entity
 }
@@ -170,6 +172,7 @@ Scene :: struct {
     size_x : int,
     size_y : int,
 	cells : [dynamic]Cell,
+	doors : [dynamic]^Entity,
 }
 
 log_error :: fmt.println
@@ -179,7 +182,6 @@ game_state: Game_State
 camera : rl.Camera2D
 
 player : ^Entity
-door_test : ^Entity
 
 target : rl.RenderTexture2D 
 

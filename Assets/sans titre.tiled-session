@@ -12,12 +12,28 @@
             "scaleInDock": 2,
             "scaleInEditor": 1
         },
+        "house1.tmx": {
+            "scale": 8,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 54.4375,
+                "y": 62
+            }
+        },
         "sans titre.tmx": {
             "scale": 2.830208333333333,
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 251.7482517482518,
                 "y": 158.99889584100112
+            }
+        },
+        "worldIntro.tmx": {
+            "scale": 3.0498958333333333,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 239.84425697598965,
+                "y": 160.00546466750916
             }
         }
     },
@@ -33,8 +49,8 @@
     ],
     "project": "sans titre.tiled-project",
     "recentFiles": [
-        "5 colors (transparent + filled roofs).tsx",
-        "sans titre.tmx"
+        "sans titre.tmx",
+        "5 colors (transparent + filled roofs).tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

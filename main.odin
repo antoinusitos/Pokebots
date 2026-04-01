@@ -27,11 +27,6 @@ main :: proc() {
 	    zoom = 1
 	}
 
-    door_test = entity_create(.door)
-    door_test.position = {5 * door_test.sprite_size, 6 * door_test.sprite_size}
-    door_test.target_x = 7
-    door_test.target_y = -33
-
     floor_sprite = rl.LoadTexture("Assets/test_floor.png")
     door_sprite = rl.LoadTexture("Assets/door.png")
     atlas = rl.LoadTexture("Assets/atlas.png")
@@ -40,42 +35,6 @@ main :: proc() {
     load_level("Assets/house1.tmj", &house_1)
 
     game_state.current_scene = &main_world
-
-    /*map_info := map_from_file("Assets/lvl_intro.tmj")
-
-    main_world.world_width = TILE_WIDTH
-    main_world.world_height = TILE_HEIGHT
-
-    for y := 0; y < game_state.world_height; y += 1 {
-        for x := 0; x < game_state.world_width; x += 1 {
-            cell := Cell{
-                cell_x = x, 
-                cell_y = y, 
-                sprite_index = map_info.layers[0].data[y * TILE_WIDTH + x] - 1, 
-                blocker_sprite_index = map_info.layers[1].data[y * TILE_WIDTH + x] - 1}
-            if cell.sprite_index != -1 {
-                index_x := cell.sprite_index % ATLAS_WIDTH
-                cell.sprite_pos_x = f32(index_x * 16)
-                index_y := (cell.sprite_index - index_x) / ATLAS_HEIGHT
-                cell.sprite_pos_y = f32(index_y * 16)
-            }
-            if cell.blocker_sprite_index != -1 {
-                if cell.blocker_sprite_index == DOOR_SPRITE_INDEX {
-                    log_error("found")
-                }
-                else {
-                    cell.blocked = true
-                    log_error("blocker ", x, y)
-                }
-                index_x := cell.blocker_sprite_index % ATLAS_WIDTH
-                cell.blocker_sprite_pos_x = f32(index_x * 16)
-                index_y := (cell.blocker_sprite_index - index_x) / ATLAS_HEIGHT
-                cell.blocker_sprite_pos_y = f32(index_y * 16)
-            }
-            append(&main_world.cells, cell)
-            
-        }
-    }*/
 
     log_error("init done.")
 
@@ -120,43 +79,6 @@ main :: proc() {
 	rl.CloseWindow()
 }
 
-load_level :: proc(level_name : string, scene : ^Scene) {
-    map_info := map_from_file(level_name)
-
-    scene.size_x = map_info.width
-    scene.size_y = map_info.height
-
-    for y := 0; y < scene.size_y; y += 1 {
-        for x := 0; x < scene.size_x ; x += 1 {
-            cell := Cell{
-                cell_x = x, 
-                cell_y = y, 
-                sprite_index = map_info.layers[0].data[y *  scene.size_x + x] - 1, 
-                blocker_sprite_index = map_info.layers[1].data[y *  scene.size_x + x] - 1}
-            if cell.sprite_index != -1 {
-                index_x := cell.sprite_index % ATLAS_WIDTH
-                cell.sprite_pos_x = f32(index_x * 16)
-                index_y := (cell.sprite_index - index_x) / ATLAS_HEIGHT
-                cell.sprite_pos_y = f32(index_y * 16)
-            }
-            if cell.blocker_sprite_index != -1 {
-                if cell.blocker_sprite_index == DOOR_SPRITE_INDEX {
-                    log_error("found")
-                }
-                else {
-                    cell.blocked = true
-                }
-                index_x := cell.blocker_sprite_index % ATLAS_WIDTH
-                cell.blocker_sprite_pos_x = f32(index_x * 16)
-                index_y := (cell.blocker_sprite_index - index_x) / ATLAS_HEIGHT
-                cell.blocker_sprite_pos_y = f32(index_y * 16)
-            }
-            append(&scene.cells, cell)
-            
-        }
-    }
-}
-
 update :: proc() {
 	//log_error("update")
 
@@ -164,8 +86,10 @@ update :: proc() {
 
     player.update(player)
 
-    if collide(player, door_test) == 2 {
-        player.position = prev_pos
+    for d := 0; d < len(game_state.current_scene.doors); d += 1 {
+        if collide(player, game_state.current_scene.doors[d]) == 2 {
+            player.position = prev_pos
+        }
     }
 
 	camera.target = snap({player.position.x, player.position.y})
@@ -201,29 +125,22 @@ draw :: proc() {
     rl.BeginMode2D(camera)
 
     index_cell := 0
-    for y := 0; y < game_state.current_scene.size_y - 1; y += 1 {
+    for y := 0; y < game_state.current_scene.size_y; y += 1 {
         for x := 0; x < game_state.current_scene.size_x; x += 1 {
             rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].sprite_pos_x, game_state.current_scene.cells[index_cell].sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
             
-            if game_state.current_scene.cells[index_cell].blocker_sprite_index != -1 {
-                rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].blocker_sprite_pos_x, game_state.current_scene.cells[index_cell].blocker_sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
+            if game_state.current_scene.cells[index_cell].foreground_sprite_index != -1 {
+                rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].foreground_sprite_pos_x, game_state.current_scene.cells[index_cell].foreground_sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
             }
 
             index_cell += 1
         }
     }
 
-    // house interior
-    red := true
-    for x := 0; x < 10; x += 1 {
-        for y := 25; y < 35; y += 1 {
-            rl.DrawRectangle(i32(x * 16), i32(y * 16), 16, 16, red ? rl.RED : rl.GREEN)
-            red = !red
-        }
-        red = !red
+    for d := 0; d < len(game_state.current_scene.doors); d += 1 {
+        game_state.current_scene.doors[d].draw(game_state.current_scene.doors[d])
     }
 
-    door_test.draw(door_test)
     player.draw(player)
 
     rl.EndMode2D()

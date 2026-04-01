@@ -355,10 +355,12 @@ map_from_file :: proc(filepath : string) -> Map_Info {
 }
 
 collide :: proc(entity_a : ^Entity, entity_b : ^Entity) -> int {
-	is_colliding := entity_a.position.x < entity_b.position.x + entity_b.collision_size &&
-			entity_a.position.x + entity_a.collision_size > entity_b.position.x &&
-			entity_a.position.y < entity_b.position.y + entity_b.collision_size &&
-			entity_a.position.y + entity_a.collision_size > entity_b.position.y
+	//is_colliding := entity_a.position.x < entity_b.position.x + entity_b.collision_size &&
+	//		entity_a.position.x + entity_a.collision_size > entity_b.position.x &&
+	//		entity_a.position.y < entity_b.position.y + entity_b.collision_size &&
+	//		entity_a.position.y + entity_a.collision_size > entity_b.position.y
+
+	is_colliding := entity_a.cell_x == entity_b.cell_x && entity_a.cell_y == entity_b.cell_y
 
 	if is_colliding && entity_a.is_trigger {
 		entity_a.on_trigger_enter(entity_a, entity_b)
@@ -395,13 +397,12 @@ transition :: proc() {
     else {
         if !game_state.transition_done {
             game_state.transition_done = true
-            game_state.current_scene = &house_1
-            player.cell_x = 4
-		    player.cell_y = 5
+            game_state.current_scene = game_state.current_door.scene
+            player.cell_x = game_state.current_door.target_x
+		    player.cell_y = game_state.current_door.target_y
 		    player.moving = false
 		    player.position = {f32(player.cell_x)  * 16, f32(player.cell_y) * 16}
 		    player.direction = .down
-            //player.position = {game_state.current_door.target_x * 16, game_state.current_door.target_y * 16}
             game_state.current_door = nil
         }
         color.a = u8( (1 - game_state.time_transition / (TRANSITION_TIME / 2)) * 255)
@@ -411,6 +412,71 @@ transition :: proc() {
             game_state.time_transition = 0
             game_state.transitionning = false
             game_state.transition_done = false
+        }
+    }
+}
+
+load_level :: proc(level_name : string, scene : ^Scene) {
+    map_info := map_from_file(level_name)
+
+    scene.size_x = map_info.width
+    scene.size_y = map_info.height
+
+    for y := 0; y < scene.size_y; y += 1 {
+        for x := 0; x < scene.size_x ; x += 1 {
+            cell := Cell{
+                cell_x = x, 
+                cell_y = y, 
+                sprite_index = map_info.layers[0].data[y *  scene.size_x + x] - 1, 
+                foreground_sprite_index = map_info.layers[1].data[y *  scene.size_x + x] - 1,
+                blocker_index = map_info.layers[2].data[y *  scene.size_x + x]}
+            if cell.sprite_index != -1 {
+                index_x := cell.sprite_index % ATLAS_WIDTH
+                cell.sprite_pos_x = f32(index_x * 16)
+                index_y := (cell.sprite_index - index_x) / ATLAS_HEIGHT
+                cell.sprite_pos_y = f32(index_y * 16)
+            }
+            if cell.foreground_sprite_index != -1 {
+                index_x := cell.foreground_sprite_index % ATLAS_WIDTH
+                cell.foreground_sprite_pos_x = f32(index_x * 16)
+                index_y := (cell.foreground_sprite_index - index_x) / ATLAS_HEIGHT
+                cell.foreground_sprite_pos_y = f32(index_y * 16)
+                if cell.foreground_sprite_index == DOOR_SPRITE_INDEX {
+                    door := entity_create(.door)
+                    door.position = {f32(x) * door.sprite_size, f32(y) * door.sprite_size}
+                    door.cell_x = x
+                    door.cell_y = y
+                    door.target_x = 4
+                    door.target_y = 5
+                    door.scene = &house_1
+                    append(&scene.doors, door)
+                }
+                else if cell.foreground_sprite_index == MAT_LEFT_SPRITE_INDEX {
+                    door := entity_create(.door)
+                    door.position = {f32(x) * door.sprite_size, f32(y) * door.sprite_size}
+                    door.cell_x = x
+                    door.cell_y = y
+                    door.target_x = 5
+                    door.target_y = 7
+                    door.scene = &main_world
+                    append(&scene.doors, door)
+                }
+                else if cell.foreground_sprite_index == MAT_RIGHT_SPRITE_INDEX {
+                    door := entity_create(.door)
+                    door.position = {f32(x) * door.sprite_size, f32(y) * door.sprite_size}
+                    door.cell_x = x
+                    door.cell_y = y
+                    door.target_x = 5
+                    door.target_y = 7
+                    door.scene = &main_world
+                    append(&scene.doors, door)
+                }
+            }
+            if cell.blocker_index != 0 {
+                cell.blocked = true
+            }
+            append(&scene.cells, cell)
+            
         }
     }
 }

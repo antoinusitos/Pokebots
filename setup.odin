@@ -112,7 +112,6 @@ setup_player :: proc(entity: ^Entity) {
 			}
 			entity.position.x = math.lerp(f32(entity.cell_x * 16), f32(entity.target_cell_x * 16), entity.move_lerp)
 			entity.position.y = math.lerp(f32(entity.cell_y * 16), f32(entity.target_cell_y * 16), entity.move_lerp)
-			log_error(entity.position.y)
 		}
 
 		movement.y = f32(entity.target_cell_y - entity.cell_y)		
@@ -226,6 +225,6 @@ setup_door :: proc(entity: ^Entity) {
 		game_state.current_door = self
 	}
 	entity.draw = proc(entity: ^Entity) {
-		default_draw_based_on_entity_data(entity)
+		//default_draw_based_on_entity_data(entity)
 	}
 }
