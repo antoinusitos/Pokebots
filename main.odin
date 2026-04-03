@@ -30,6 +30,20 @@ main :: proc() {
     floor_sprite = rl.LoadTexture("Assets/test_floor.png")
     door_sprite = rl.LoadTexture("Assets/door.png")
     atlas = rl.LoadTexture("Assets/atlas.png")
+
+    robot_head_sprite = rl.LoadTexture("Assets/Robot_Head.png")
+    robot_torso_sprite = rl.LoadTexture("Assets/Robot_Torso.png")
+    robot_left_arm_sprite = rl.LoadTexture("Assets/Robot_Left_Arm.png")
+    robot_right_arm_sprite = rl.LoadTexture("Assets/Robot_Right_Arm.png")
+    robot_left_leg_sprite = rl.LoadTexture("Assets/Robot_Left_Leg.png")
+    robot_right_leg_sprite = rl.LoadTexture("Assets/Robot_Right_Leg.png")
+
+    head_test.sprite = robot_head_sprite
+    torso_test.sprite = robot_torso_sprite
+    left_arm_test.sprite = robot_left_arm_sprite
+    right_arm_test.sprite = robot_right_arm_sprite
+    left_leg_test.sprite = robot_left_leg_sprite
+    right_leg_test.sprite = robot_right_leg_sprite
    
     load_level("Assets/lvl_intro.tmj", &main_world)
     load_level("Assets/house1.tmj", &house_1)
@@ -67,6 +81,8 @@ main :: proc() {
     game_state.screen_type = .game
     game_state.input_type = .game
 
+    start_combat()
+
 	for !game_state.want_to_quit && !rl.WindowShouldClose() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.BLACK)
@@ -74,6 +90,8 @@ main :: proc() {
 		update()
 
         draw()
+
+        rl.EndDrawing()
 	}
 
 	rl.CloseWindow()
@@ -82,7 +100,18 @@ main :: proc() {
 update :: proc() {
 	//log_error("update")
 
-	prev_pos := player.position
+    switch(game_state.screen_type) {
+        case .game :
+            update_game()
+        case .combat :
+            update_combat()
+        case .menu :
+            update_Menu()
+    }
+}
+
+update_game :: proc () {
+    prev_pos := player.position
 
     player.update(player)
 
@@ -92,13 +121,27 @@ update :: proc() {
         }
     }
 
-	camera.target = snap({player.position.x, player.position.y})
+    camera.target = snap({player.position.x, player.position.y})
+}
+
+update_Menu :: proc () {
+    
 }
 
 draw :: proc() {
 	//log_error("draw")
+    switch(game_state.screen_type) {
+        case .game :
+            draw_game()
+        case .combat :
+            draw_combat()
+        case .menu :
+            draw_Menu()
+    }
+}
 
-	// --- Calcul du scale entier ---
+draw_game :: proc () {
+    // --- Calcul du scale entier ---
     scaleX := WINDOW_WIDTH / DRAW_WIDTH
     scaleY := WINDOW_HEIGHT / DRAW_HEIGHT
 
@@ -147,7 +190,7 @@ draw :: proc() {
 
     rl.EndTextureMode()
 
-	// --- Rendu écran ---
+    // --- Rendu écran ---
     rl.BeginDrawing()
     rl.ClearBackground(rl.DARKGRAY)
 
@@ -169,5 +212,8 @@ draw :: proc() {
         transition()
     }
 
-    rl.EndDrawing()
+}
+
+draw_Menu :: proc () {
+    
 }

@@ -20,30 +20,65 @@ TRANSITION_TIME :: 1.0
 battery_test :: Robot_Part { 
 	name = "battery_test",
 	capacity = 400,
-	percent = 100
+	percent = 100,
 }
 
-head_test :: Robot_Part { 
+head_test := Robot_Part { 
 	name = "head_test",
 	capacity = 80,
-	percent = 100
+	percent = 100,
+	hp = 50,
+	current_hp = 50,
+	hp_consommation = 1.5,
+	damage = 0
 }
 
-torso_test :: Robot_Part { 
+torso_test := Robot_Part { 
 	name = "torso_test",
 	capacity = 80,
-	percent = 100
+	percent = 100,
+	hp = 50,
+	current_hp = 50,
+	hp_consommation = 1.2,
+	damage = 0
 }
 
-arm_test :: Robot_Part { 
-	name = "arm_test",
+left_arm_test := Robot_Part { 
+	name = "left_arm_test",
 	capacity = 80,
-	percent = 100
+	percent = 100,
+	hp = 50,
+	current_hp = 50,
+	hp_consommation = 1,
+	damage = 30
 }
 
-leg_test :: Robot_Part { 
-	name = "leg_test",
+right_arm_test := Robot_Part { 
+	name = "right_arm_test",
 	capacity = 80,
-	percent = 100
+	percent = 100,
+	hp = 50,
+	current_hp = 50,
+	hp_consommation = 1,
+	damage = 30
 }
 
+left_leg_test := Robot_Part { 
+	name = "left_leg_test",
+	capacity = 80,
+	percent = 100,
+	hp = 50,
+	current_hp = 50,
+	hp_consommation = 0.8,
+	damage = 10
+}
+
+right_leg_test := Robot_Part { 
+	name = "right_leg_test",
+	capacity = 80,
+	percent = 100,
+	hp = 50,
+	current_hp = 50,
+	hp_consommation = 0.8,
+	damage = 10
+}

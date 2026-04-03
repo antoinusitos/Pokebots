@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "sans titre.tmx",
+    "activeFile": "worldIntro.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -44,13 +44,15 @@
     "map.tileWidth": 16,
     "openFiles": [
         "5 colors (transparent + filled roofs).tsx",
-        "sans titre.tmx",
-        "5 colors (transparent + filled roofs).tsx"
+        "worldIntro.tmx",
+        "house1.tmx"
     ],
     "project": "sans titre.tiled-project",
     "recentFiles": [
-        "sans titre.tmx",
-        "5 colors (transparent + filled roofs).tsx"
+        "5 colors (transparent + filled roofs).tsx",
+        "house1.tmx",
+        "worldIntro.tmx",
+        "sans titre.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

@@ -311,6 +311,30 @@ setup_reactive_image :: proc(reactive_image : ^Reactive_Image) {
 	}
 }
 
+Slider :: struct {
+	x : f32,
+	y : f32,
+	width : f32,
+	height : f32,
+	percent : f32,
+	background_color : rl.Color,
+	foreground_color : rl.Color,
+	active : bool, // don't update or draw
+
+	draw : proc(^Slider),
+}
+
+setup_slider :: proc(slider : ^Slider) {
+	slider.draw = proc(slider : ^Slider) {
+		if !slider.active {
+			return
+		}
+
+		rl.DrawRectangleRec(rl.Rectangle{slider.x, slider.y, slider.width, slider.height}, slider.background_color)
+		rl.DrawRectangleRec(rl.Rectangle{slider.x, slider.y, slider.width * slider.percent, slider.height}, slider.foreground_color)
+	}
+}
+
 distance :: proc(v1 : rl.Vector2, v2 : rl.Vector2) -> f32{
     first :f32 = math.pow_f32(v2.x-v1.x,2)
     second :f32 = math.pow_f32(v2.y-v1.y,2)

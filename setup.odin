@@ -31,6 +31,7 @@ entity_create :: proc(kind: Entity_Kind) -> ^Entity {
 		case .nil: break
 		case .player: setup_player(new_entity)
 		case .door: setup_door(new_entity)
+		case .npc: setup_npc(new_entity)
 	}
 
 	return new_entity
@@ -55,15 +56,22 @@ setup_player :: proc(entity: ^Entity) {
 	entity.speed = 3
 	entity.is_idle = true
 	entity.robot = {
-		hp = 100,
 		battery = battery_test,
 		head = head_test,
 		torso = torso_test,
-		left_arm = arm_test,
-		right_arm = arm_test,
-		left_leg = leg_test,
-		right_leg = leg_test
+		left_arm = left_arm_test,
+		right_arm = right_arm_test,
+		left_leg = left_leg_test,
+		right_leg = right_leg_test,
 	}
+	entity.robot.hp = 
+		f32(entity.robot.head.hp) + 
+		f32(entity.robot.torso.hp) + 
+		f32(entity.robot.left_arm.hp) + 
+		f32(entity.robot.right_arm.hp) + 
+		f32(entity.robot.left_leg.hp) + 
+		f32(entity.robot.right_leg.hp)
+	entity.robot.current_hp = entity.robot.hp
 
 	entity.update = proc(entity: ^Entity) {
 		if game_state.transitionning {
@@ -226,5 +234,39 @@ setup_door :: proc(entity: ^Entity) {
 	}
 	entity.draw = proc(entity: ^Entity) {
 		//default_draw_based_on_entity_data(entity)
+	}
+}
+
+setup_npc :: proc(entity: ^Entity) {
+	entity.kind = .npc
+	entity.sprite_size = 16
+	entity.collision_size = 14
+	entity.color = rl.WHITE
+	entity.speed = 3
+	entity.is_idle = true
+	entity.robot = {
+		battery = battery_test,
+		head = head_test,
+		torso = torso_test,
+		left_arm = left_arm_test,
+		right_arm = right_arm_test,
+		left_leg = left_leg_test,
+		right_leg = right_leg_test,
+	}
+	entity.robot.hp = 
+		f32(entity.robot.head.hp) + 
+		f32(entity.robot.torso.hp) + 
+		f32(entity.robot.left_arm.hp) + 
+		f32(entity.robot.right_arm.hp) + 
+		f32(entity.robot.left_leg.hp) + 
+		f32(entity.robot.right_leg.hp)
+	entity.robot.current_hp = entity.robot.hp
+
+	entity.update = proc(entity: ^Entity) {
+	}
+	entity.on_trigger_enter = proc(self : ^Entity, entity_touching: ^Entity) {
+	}
+	entity.draw = proc(entity: ^Entity) {
+		default_draw_based_on_entity_data(entity)
 	}
 }

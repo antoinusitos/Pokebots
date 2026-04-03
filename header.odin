@@ -21,6 +21,12 @@ Game_State :: struct {
 	transition_done : bool,
 
 	current_door : ^Entity,
+
+
+	// COMBAT
+	player_hp_slider : Slider,
+	opponent_hp_slider : Slider,
+	opponent : ^Entity
 }
 
 Entity :: struct {
@@ -74,16 +80,23 @@ Entity_Kind :: enum {
 	nil,
 	player,
 	door,
+	npc,
 }
 
 Robot_Part :: struct {
 	name : string, 
 	capacity : int,
 	percent : int,
+	damage : int,
+	hp : f32,
+	current_hp : f32,
+	hp_consommation : f32,
+	sprite : rl.Texture2D
 }
 
 Robot :: struct {
-	hp : int,
+	hp : f32,
+	current_hp : f32,
 	battery : Robot_Part,
 	head : Robot_Part,
 	torso : Robot_Part,
@@ -187,6 +200,13 @@ target : rl.RenderTexture2D
 
 floor_sprite : rl.Texture2D
 door_sprite : rl.Texture2D
+
+robot_head_sprite : rl.Texture2D
+robot_torso_sprite : rl.Texture2D
+robot_left_arm_sprite : rl.Texture2D
+robot_right_arm_sprite : rl.Texture2D
+robot_left_leg_sprite : rl.Texture2D
+robot_right_leg_sprite : rl.Texture2D
 
 atlas : rl.Texture2D
 
