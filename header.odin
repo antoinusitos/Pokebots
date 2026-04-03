@@ -12,7 +12,6 @@ Game_State :: struct {
 	world_name: string,
 	player_handle: Entity_Handle,
 	screen_type : Screen_Type,
-	input_type : Input_Type,
 
 	current_scene : ^Scene,
 
@@ -26,7 +25,27 @@ Game_State :: struct {
 	// COMBAT
 	player_hp_slider : Slider,
 	opponent_hp_slider : Slider,
-	opponent : ^Entity
+	opponent : ^Entity,
+	is_player_turn : bool,
+	combat_flow : Combat_Flow_Type,
+	selected_part : Robot_Part_Type,
+	opponent_selected_part : Robot_Part_Type,
+	current_button : ^Button,
+	attack_button : Button,
+	flee_button : Button,
+	player_head_button : Button,
+	player_torso_button : Button,
+	player_left_arm_button : Button,
+	player_right_arm_button : Button,
+	player_left_leg_button : Button,
+	player_right_leg_button : Button,
+
+	opponent_head_button : Button,
+	opponent_torso_button : Button,
+	opponent_left_arm_button : Button,
+	opponent_right_arm_button : Button,
+	opponent_left_leg_button : Button,
+	opponent_right_leg_button : Button,
 }
 
 Entity :: struct {
@@ -86,12 +105,21 @@ Entity_Kind :: enum {
 Robot_Part :: struct {
 	name : string, 
 	capacity : int,
-	percent : int,
-	damage : int,
+	percent : f32,
+	damage : f32,
 	hp : f32,
 	current_hp : f32,
 	hp_consommation : f32,
 	sprite : rl.Texture2D
+}
+
+Robot_Part_Type :: enum {
+	head,
+	torso,
+	left_arm,
+	right_arm,
+	left_leg,
+	right_leg
 }
 
 Robot :: struct {
@@ -186,6 +214,13 @@ Scene :: struct {
     size_y : int,
 	cells : [dynamic]Cell,
 	doors : [dynamic]^Entity,
+}
+
+Combat_Flow_Type :: enum {
+	action,
+	sender,
+	receiver,
+	attack
 }
 
 log_error :: fmt.println

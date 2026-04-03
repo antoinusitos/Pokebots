@@ -30,6 +30,11 @@ Button :: struct {
 	disabled : bool,
 	active : bool, // don't update or draw
 
+	up_button : ^Button,
+	down_button : ^Button,
+	left_button : ^Button,
+	right_button : ^Button,
+
 	filled_done : bool,
 	fill_percent : f32,
 	fill_max : f32,

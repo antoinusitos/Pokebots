@@ -79,7 +79,6 @@ main :: proc() {
     }
 
     game_state.screen_type = .game
-    game_state.input_type = .game
 
     start_combat()
 
