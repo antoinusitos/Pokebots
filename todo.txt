@@ -1,21 +1,16 @@
 doing :
-- more abilities buttons
-- olding clones when run ends
-- rework home
+- add robot parts preset
+- add abilities
+- finish combat
+
 
 todo :
-- 3d view
-- shop
-- passive abilities (when hit : gain +1 str, etc.)
-- turn number (with rewards at the end)
-- scraping clones
-- add ryan, random guy and another character for cloning
-- add defeat
-- Show enemies attack range
-
-https://pixelfrog-assets.itch.io/tiny-swords
-
+- rework sprite sorting
+- add npc
+- add events
+- add more houses
+- add doors link
+- add dialog
+- add bushes
 
 bug :
-- crash sometimes when drawing path to move
-- crash random when moving

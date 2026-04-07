@@ -74,16 +74,18 @@ setup_player :: proc(entity: ^Entity) {
 		f32(entity.robot.left_leg.hp) + 
 		f32(entity.robot.right_leg.hp)
 	entity.robot.current_hp = entity.robot.hp
+	entity.entity_draw_info = Entity_Draw_Info {
+		use_sprite = true,
+		pos = entity.position,
+		size = {16, 16},
+		color = rl.WHITE,
+		offset = {0, -6}
+	}
 
 	entity.update = proc(entity: ^Entity) {
 		if game_state.transitionning {
-			entity.entity_draw_info = Entity_Draw_Info {
-				sprite = entity.sprite,
-				use_sprite = true,
-				pos = entity.position,
-				size = {16, 16},
-				color = rl.WHITE
-			}
+			entity.entity_draw_info.sprite = entity.sprite
+			entity.entity_draw_info.pos = entity.position
 			return
 		}
 
@@ -164,13 +166,8 @@ setup_player :: proc(entity: ^Entity) {
 				break
 			}
 
-			entity.entity_draw_info = Entity_Draw_Info {
-				sprite = entity.sprite,
-				use_sprite = true,
-				pos = entity.position,
-				size = {16, 16},
-				color = rl.WHITE
-			}
+			entity.entity_draw_info.sprite = entity.sprite
+			entity.entity_draw_info.pos = entity.position
 		}
 		else {
 			if entity.is_idle {
@@ -205,13 +202,8 @@ setup_player :: proc(entity: ^Entity) {
 				}
 			}
 			entity.sprite = entity.sprite_walk_current[entity.anim_frame].sprite
-			entity.entity_draw_info = Entity_Draw_Info {
-				sprite = entity.sprite,
-				use_sprite = true,
-				pos = entity.position,
-				size = {16, 16},
-				color = rl.WHITE
-			}
+			entity.entity_draw_info.sprite = entity.sprite
+			entity.entity_draw_info.pos = entity.position
 		}
 
 	}

@@ -195,10 +195,10 @@ draw_game :: proc () {
 
     for d in to_draw {
         if d.use_sprite {
-            rl.DrawTextureV(d.sprite, d.pos, d.color)
+            rl.DrawTextureV(d.sprite, d.pos + d.offset, d.color)
         }
         else {
-            rl.DrawTextureRec(atlas, {d.sprite_pos.x, d.sprite_pos.y, d.size.x, d.size.y}, {d.pos.x * 16, d.pos.y * 16}, d.color)
+            rl.DrawTextureRec(atlas, {d.sprite_pos.x + d.offset.x, d.sprite_pos.y + d.offset.y, d.size.x, d.size.y}, {d.pos.x * 16, d.pos.y * 16}, d.color)
         }
     }
 

@@ -101,6 +101,7 @@ Entity_Draw_Info :: struct {
 	color : rl.Color,
 	use_sprite : bool,
 	sprite : rl.Texture2D,
+	offset : rl.Vector2,
 }
 
 Entity_Handle :: struct {
