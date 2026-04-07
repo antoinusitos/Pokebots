@@ -120,11 +120,14 @@ Robot_Part :: struct {
 	name : string, 
 	capacity : int,
 	percent : f32,
-	damage : f32,
 	hp : f32,
 	current_hp : f32,
 	hp_consommation : f32,
-	sprite : rl.Texture2D
+	sprite : rl.Texture2D,
+	attack : f32,
+	defense : f32,
+	speed : f32,
+	abilities : []Ability
 }
 
 Robot_Part_Type :: enum {
@@ -234,6 +237,10 @@ Combat_Flow_Type :: enum {
 	sender,
 	receiver,
 	attack
+}
+
+Ability :: struct {
+	name : string,
 }
 
 log_error :: fmt.println

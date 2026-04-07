@@ -61,8 +61,8 @@ setup_player :: proc(entity: ^Entity) {
 		battery = battery_test,
 		head = head_test,
 		torso = torso_test,
-		left_arm = left_arm_test,
-		right_arm = right_arm_test,
+		left_arm = arm_1,
+		right_arm = arm_1,
 		left_leg = left_leg_test,
 		right_leg = right_leg_test,
 	}
@@ -271,8 +271,8 @@ setup_npc :: proc(entity: ^Entity) {
 		battery = battery_test,
 		head = head_test,
 		torso = torso_test,
-		left_arm = left_arm_test,
-		right_arm = right_arm_test,
+		left_arm = arm_1,
+		right_arm = arm_1,
 		left_leg = left_leg_test,
 		right_leg = right_leg_test,
 	}
