@@ -55,6 +55,8 @@ setup_player :: proc(entity: ^Entity) {
 	entity.color = rl.WHITE
 	entity.speed = 3
 	entity.is_idle = true
+	entity.static = false
+	entity.was_ordered = false
 	entity.robot = {
 		battery = battery_test,
 		head = head_test,
@@ -75,6 +77,13 @@ setup_player :: proc(entity: ^Entity) {
 
 	entity.update = proc(entity: ^Entity) {
 		if game_state.transitionning {
+			entity.entity_draw_info = Entity_Draw_Info {
+				sprite = entity.sprite,
+				use_sprite = true,
+				pos = entity.position,
+				size = {16, 16},
+				color = rl.WHITE
+			}
 			return
 		}
 
@@ -82,6 +91,7 @@ setup_player :: proc(entity: ^Entity) {
 
 		if (!entity.moving)
 		{
+			entity.moved = false
 			entity.move_lerp = 0
 			entity.target_cell_x = entity.cell_x
 			entity.target_cell_y = entity.cell_y
@@ -111,6 +121,7 @@ setup_player :: proc(entity: ^Entity) {
 		}
 		else
 		{
+			entity.moved = true
 			entity.move_lerp += rl.GetFrameTime() * entity.speed
 			if (entity.move_lerp > 1) {
 				entity.move_lerp = 1
@@ -152,6 +163,14 @@ setup_player :: proc(entity: ^Entity) {
 				entity.sprite = entity.sprite_walk_right[0].sprite
 				break
 			}
+
+			entity.entity_draw_info = Entity_Draw_Info {
+				sprite = entity.sprite,
+				use_sprite = true,
+				pos = entity.position,
+				size = {16, 16},
+				color = rl.WHITE
+			}
 		}
 		else {
 			if entity.is_idle {
@@ -186,6 +205,13 @@ setup_player :: proc(entity: ^Entity) {
 				}
 			}
 			entity.sprite = entity.sprite_walk_current[entity.anim_frame].sprite
+			entity.entity_draw_info = Entity_Draw_Info {
+				sprite = entity.sprite,
+				use_sprite = true,
+				pos = entity.position,
+				size = {16, 16},
+				color = rl.WHITE
+			}
 		}
 
 	}
@@ -225,6 +251,8 @@ setup_door :: proc(entity: ^Entity) {
 	entity.collision_size = 10
 	entity.color = rl.WHITE
 	entity.is_trigger = true
+	entity.static = true
+	entity.was_ordered = false
 
 	entity.update = proc(entity: ^Entity) {
 	}
@@ -244,6 +272,9 @@ setup_npc :: proc(entity: ^Entity) {
 	entity.color = rl.WHITE
 	entity.speed = 3
 	entity.is_idle = true
+	entity.static = false
+	entity.moved = false
+	entity.was_ordered = false
 	entity.robot = {
 		battery = battery_test,
 		head = head_test,

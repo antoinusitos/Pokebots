@@ -16,8 +16,8 @@
             "scale": 8,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 54.4375,
-                "y": 62
+                "x": 56,
+                "y": 56.0625
             }
         },
         "sans titre.tmx": {
@@ -30,7 +30,7 @@
         },
         "worldIntro.tmx": {
             "scale": 3.0498958333333333,
-            "selectedLayer": 1,
+            "selectedLayer": 3,
             "viewCenter": {
                 "x": 239.84425697598965,
                 "y": 160.00546466750916

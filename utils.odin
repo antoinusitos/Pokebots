@@ -429,6 +429,11 @@ transition :: proc() {
             game_state.current_scene = game_state.current_door.scene
             player.cell_x = game_state.current_door.target_x
 		    player.cell_y = game_state.current_door.target_y
+		    player.moved = false
+			player.move_lerp = 0
+			player.target_cell_x = player.cell_x
+			player.target_cell_y = player.cell_y
+			player.sprite = player.sprite_idle[0].sprite
 		    player.moving = false
 		    player.position = {f32(player.cell_x)  * 16, f32(player.cell_y) * 16}
 		    player.direction = .down
@@ -448,6 +453,8 @@ transition :: proc() {
 load_level :: proc(level_name : string, scene : ^Scene) {
     map_info := map_from_file(level_name)
 
+    log_error("loading ", level_name, "...")
+
     scene.size_x = map_info.width
     scene.size_y = map_info.height
 
@@ -459,17 +466,29 @@ load_level :: proc(level_name : string, scene : ^Scene) {
                 sprite_index = map_info.layers[0].data[y *  scene.size_x + x] - 1, 
                 foreground_sprite_index = map_info.layers[1].data[y *  scene.size_x + x] - 1,
                 blocker_index = map_info.layers[2].data[y *  scene.size_x + x]}
+            if len(map_info.layers) > 3
+            {
+                cell.roof_sprite_index = map_info.layers[3].data[y *  scene.size_x + x] - 1
+            }
             if cell.sprite_index != -1 {
                 index_x := cell.sprite_index % ATLAS_WIDTH
-                cell.sprite_pos_x = f32(index_x * 16)
                 index_y := (cell.sprite_index - index_x) / ATLAS_HEIGHT
-                cell.sprite_pos_y = f32(index_y * 16)
+	            append(&scene.static_entity_draw_infos, Entity_Draw_Info {
+	            	sprite_pos = { f32(index_x * 16), f32(index_y * 16)},
+	            	size = {16, 16},
+	            	pos = {f32(x), f32(y)},
+	            	color = rl.WHITE
+	            })
             }
             if cell.foreground_sprite_index != -1 {
                 index_x := cell.foreground_sprite_index % ATLAS_WIDTH
-                cell.foreground_sprite_pos_x = f32(index_x * 16)
                 index_y := (cell.foreground_sprite_index - index_x) / ATLAS_HEIGHT
-                cell.foreground_sprite_pos_y = f32(index_y * 16)
+                append(&scene.static_entity_draw_infos, Entity_Draw_Info {
+	            	sprite_pos = { f32(index_x * 16), f32(index_y * 16)},
+	            	size = {16, 16},
+	            	pos = {f32(x), f32(y)},
+	            	color = rl.WHITE
+	            })
                 if cell.foreground_sprite_index == DOOR_SPRITE_INDEX {
                     door := entity_create(.door)
                     door.position = {f32(x) * door.sprite_size, f32(y) * door.sprite_size}
@@ -504,8 +523,17 @@ load_level :: proc(level_name : string, scene : ^Scene) {
             if cell.blocker_index != 0 {
                 cell.blocked = true
             }
+            if cell.roof_sprite_index != -1 {
+                index_x := cell.roof_sprite_index % ATLAS_WIDTH
+                index_y := (cell.roof_sprite_index - index_x) / ATLAS_HEIGHT
+	            append(&scene.roof_entity_draw_infos, Entity_Draw_Info {
+	            	sprite_pos = { f32(index_x * 16), f32(index_y * 16)},
+	            	size = {16, 16},
+	            	pos = {f32(x), f32(y)},
+	            	color = rl.WHITE
+	            })
+            }
             append(&scene.cells, cell)
-            
         }
     }
 }

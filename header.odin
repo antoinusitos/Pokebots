@@ -62,6 +62,10 @@ Entity :: struct {
 	collision_size: f32,
 	is_trigger : bool,
 	color : rl.Color,
+	moved : bool,
+	static : bool,
+	was_ordered : bool,
+	entity_draw_info : Entity_Draw_Info,
 
 	//characters
 	speed : f32,
@@ -88,6 +92,15 @@ Entity :: struct {
 	update : proc(^Entity),
 	on_trigger_enter : proc(self : ^Entity, entity_touching: ^Entity),
 	draw: proc(^Entity),
+}
+
+Entity_Draw_Info :: struct {
+	pos : rl.Vector2,
+	sprite_pos : rl.Vector2,
+	size : rl.Vector2,
+	color : rl.Color,
+	use_sprite : bool,
+	sprite : rl.Texture2D,
 }
 
 Entity_Handle :: struct {
@@ -162,11 +175,8 @@ Cell :: struct {
 	cell_x : int,
 	cell_y : int,
 	sprite_index : int,
-	sprite_pos_x : f32,
-	sprite_pos_y : f32,
 	foreground_sprite_index : int,
-	foreground_sprite_pos_x : f32,
-	foreground_sprite_pos_y : f32,
+	roof_sprite_index : int,
 	blocker_index : int,
 	blocked : bool,
 	entity : ^Entity
@@ -214,6 +224,8 @@ Scene :: struct {
     size_y : int,
 	cells : [dynamic]Cell,
 	doors : [dynamic]^Entity,
+	static_entity_draw_infos : [dynamic]Entity_Draw_Info,
+	roof_entity_draw_infos : [dynamic]Entity_Draw_Info
 }
 
 Combat_Flow_Type :: enum {

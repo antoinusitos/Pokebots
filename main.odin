@@ -80,7 +80,7 @@ main :: proc() {
 
     game_state.screen_type = .game
 
-    start_combat()
+    //start_combat()
 
 	for !game_state.want_to_quit && !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -120,7 +120,7 @@ update_game :: proc () {
         }
     }
 
-    camera.target = snap({player.position.x, player.position.y})
+    camera.target = {player.position.x, player.position.y}
 }
 
 update_Menu :: proc () {
@@ -166,24 +166,45 @@ draw_game :: proc () {
 
     rl.BeginMode2D(camera)
 
-    index_cell := 0
-    for y := 0; y < game_state.current_scene.size_y; y += 1 {
-        for x := 0; x < game_state.current_scene.size_x; x += 1 {
-            rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].sprite_pos_x, game_state.current_scene.cells[index_cell].sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
-            
-            if game_state.current_scene.cells[index_cell].foreground_sprite_index != -1 {
-                rl.DrawTextureRec(atlas, {game_state.current_scene.cells[index_cell].foreground_sprite_pos_x, game_state.current_scene.cells[index_cell].foreground_sprite_pos_y, 16, 16}, {f32(game_state.current_scene.cells[index_cell].cell_x * 16), f32(game_state.current_scene.cells[index_cell].cell_y * 16)}, rl.WHITE)
-            }
+    to_draw : [dynamic]Entity_Draw_Info
 
-            index_cell += 1
+    for d in game_state.current_scene.static_entity_draw_infos {
+        append(&to_draw, d)
+    }
+
+    index := 0
+    injected := false
+    for d in to_draw {
+        if (d.pos.y - 1) * 16 > player.entity_draw_info.pos.y {
+            inject_at(&to_draw, index, player.entity_draw_info)
+            injected = true
+            break
+        }
+        index += 1
+    }
+
+    if !injected {
+        append(&to_draw, player.entity_draw_info)
+    }
+
+    if len(game_state.current_scene.roof_entity_draw_infos) > 0 {
+        for d in game_state.current_scene.roof_entity_draw_infos {
+            append(&to_draw, d)
+        }    
+    }
+
+    for d in to_draw {
+        if d.use_sprite {
+            rl.DrawTextureV(d.sprite, d.pos, d.color)
+        }
+        else {
+            rl.DrawTextureRec(atlas, {d.sprite_pos.x, d.sprite_pos.y, d.size.x, d.size.y}, {d.pos.x * 16, d.pos.y * 16}, d.color)
         }
     }
 
     for d := 0; d < len(game_state.current_scene.doors); d += 1 {
         game_state.current_scene.doors[d].draw(game_state.current_scene.doors[d])
     }
-
-    player.draw(player)
 
     rl.EndMode2D()
 
