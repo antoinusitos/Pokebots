@@ -38,12 +38,12 @@ main :: proc() {
     robot_left_leg_sprite = rl.LoadTexture("Assets/Robot_Left_Leg.png")
     robot_right_leg_sprite = rl.LoadTexture("Assets/Robot_Right_Leg.png")
 
-    head_test.sprite = robot_head_sprite
-    torso_test.sprite = robot_torso_sprite
-    left_arm_test.sprite = robot_left_arm_sprite
-    right_arm_test.sprite = robot_right_arm_sprite
-    left_leg_test.sprite = robot_left_leg_sprite
-    right_leg_test.sprite = robot_right_leg_sprite
+    //head_test.sprite = robot_head_sprite
+    //torso_test.sprite = robot_torso_sprite
+    //left_arm_test.sprite = robot_left_arm_sprite
+    //right_arm_test.sprite = robot_right_arm_sprite
+    //left_leg_test.sprite = robot_left_leg_sprite
+    //right_leg_test.sprite = robot_right_leg_sprite
    
     load_level("Assets/lvl_intro.tmj", &main_world)
     load_level("Assets/house1.tmj", &house_1)
@@ -79,6 +79,8 @@ main :: proc() {
     }
 
     game_state.screen_type = .game
+
+    log_error(player.robot.abilities)
 
     //start_combat()
 

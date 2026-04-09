@@ -149,6 +149,7 @@ Robot :: struct {
 	right_arm : Robot_Part,
 	left_leg : Robot_Part,
 	right_leg : Robot_Part,
+	abilities : [4]Ability
 }
 
 Direction :: enum {

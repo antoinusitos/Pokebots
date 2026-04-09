@@ -57,15 +57,8 @@ setup_player :: proc(entity: ^Entity) {
 	entity.is_idle = true
 	entity.static = false
 	entity.was_ordered = false
-	entity.robot = {
-		battery = battery_test,
-		head = head_test,
-		torso = torso_test,
-		left_arm = arm_1,
-		right_arm = arm_1,
-		left_leg = left_leg_test,
-		right_leg = right_leg_test,
-	}
+
+	entity.robot = starter_balanced
 	entity.robot.hp = 
 		f32(entity.robot.head.hp) + 
 		f32(entity.robot.torso.hp) + 
@@ -74,6 +67,11 @@ setup_player :: proc(entity: ^Entity) {
 		f32(entity.robot.left_leg.hp) + 
 		f32(entity.robot.right_leg.hp)
 	entity.robot.current_hp = entity.robot.hp
+	entity.robot.abilities[0] = entity.robot.head.abilities[0]
+	entity.robot.abilities[1] = entity.robot.head.abilities[1]
+	entity.robot.abilities[2] = entity.robot.torso.abilities[0]
+	entity.robot.abilities[3] = entity.robot.torso.abilities[1]
+
 	entity.entity_draw_info = Entity_Draw_Info {
 		use_sprite = true,
 		pos = entity.position,
@@ -268,13 +266,13 @@ setup_npc :: proc(entity: ^Entity) {
 	entity.moved = false
 	entity.was_ordered = false
 	entity.robot = {
-		battery = battery_test,
-		head = head_test,
-		torso = torso_test,
+		battery = battery_1,
+		head = head_1,
+		torso = torso_1,
 		left_arm = arm_1,
 		right_arm = arm_1,
-		left_leg = left_leg_test,
-		right_leg = right_leg_test,
+		left_leg = leg_1,
+		right_leg = leg_1,
 	}
 	entity.robot.hp = 
 		f32(entity.robot.head.hp) + 

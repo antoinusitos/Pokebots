@@ -388,17 +388,17 @@ draw_combat :: proc () {
             game_state.flee_button.draw(&game_state.flee_button)
         case .sender:
             rl.DrawText(fmt.ctprint("Player Parts"), 10, WINDOW_HEIGHT / 2 - 30, 20, rl.WHITE)
-            game_state.player_head_button.text = string(fmt.ctprint(" HEAD (", player.robot.head.current_hp, "/", player.robot.head.hp, ")\n", player.robot.head.percent, "% ->", player.robot.head.damage))
+            game_state.player_head_button.text = string(fmt.ctprint(" HEAD (", player.robot.head.current_hp, "/", player.robot.head.hp, ")\n", player.robot.head.percent, "% ->", player.robot.head.attack))
             game_state.player_head_button.draw(&game_state.player_head_button)
-            game_state.player_torso_button.text = string(fmt.ctprint(" TORSO (", player.robot.torso.current_hp, "/", player.robot.torso.hp, ")\n", player.robot.torso.percent, "% ->", player.robot.torso.damage))
+            game_state.player_torso_button.text = string(fmt.ctprint(" TORSO (", player.robot.torso.current_hp, "/", player.robot.torso.hp, ")\n", player.robot.torso.percent, "% ->", player.robot.torso.attack))
             game_state.player_torso_button.draw(&game_state.player_torso_button)
-            game_state.player_left_arm_button.text = string(fmt.ctprint(" LEFT ARM (", player.robot.left_arm.current_hp, "/", player.robot.left_arm.hp, ")\n", player.robot.left_arm.percent, "% ->", player.robot.left_arm.damage))
+            game_state.player_left_arm_button.text = string(fmt.ctprint(" LEFT ARM (", player.robot.left_arm.current_hp, "/", player.robot.left_arm.hp, ")\n", player.robot.left_arm.percent, "% ->", player.robot.left_arm.attack))
             game_state.player_left_arm_button.draw(&game_state.player_left_arm_button)
-            game_state.player_right_arm_button.text = string(fmt.ctprint(" RIGHT ARM (", player.robot.right_arm.current_hp, "/", player.robot.right_arm.hp, ")\n", player.robot.right_arm.percent, "% ->", player.robot.right_arm.damage))
+            game_state.player_right_arm_button.text = string(fmt.ctprint(" RIGHT ARM (", player.robot.right_arm.current_hp, "/", player.robot.right_arm.hp, ")\n", player.robot.right_arm.percent, "% ->", player.robot.right_arm.attack))
             game_state.player_right_arm_button.draw(&game_state.player_right_arm_button)
-            game_state.player_left_leg_button.text = string(fmt.ctprint(" LEFT LEG (", player.robot.left_leg.current_hp, "/", player.robot.left_leg.hp, ")\n", player.robot.left_leg.percent, "% ->", player.robot.left_leg.damage))
+            game_state.player_left_leg_button.text = string(fmt.ctprint(" LEFT LEG (", player.robot.left_leg.current_hp, "/", player.robot.left_leg.hp, ")\n", player.robot.left_leg.percent, "% ->", player.robot.left_leg.attack))
             game_state.player_left_leg_button.draw(&game_state.player_left_leg_button)
-            game_state.player_right_leg_button.text = string(fmt.ctprint(" RIGHT LEG (", player.robot.right_leg.current_hp, "/", player.robot.right_leg.hp, ")\n", player.robot.right_leg.percent, "% ->", player.robot.right_leg.damage))
+            game_state.player_right_leg_button.text = string(fmt.ctprint(" RIGHT LEG (", player.robot.right_leg.current_hp, "/", player.robot.right_leg.hp, ")\n", player.robot.right_leg.percent, "% ->", player.robot.right_leg.attack))
             game_state.player_right_leg_button.draw(&game_state.player_right_leg_button)
         case .receiver:
             rl.DrawText(fmt.ctprint("Opponent Parts"), WINDOW_WIDTH - 210, WINDOW_HEIGHT / 2 - 30, 20, rl.WHITE)
@@ -432,7 +432,7 @@ apply_damage :: proc(entity : ^Entity, part : Robot_Part_Type, sender_part : Rob
         case .right_leg:
             sender_part_retrieved = entity.robot.right_leg
     }
-    damage = sender_part_retrieved.damage * (sender_part_retrieved.current_hp / sender_part_retrieved.hp) * (sender_part_retrieved.percent / 100)
+    damage = sender_part_retrieved.attack * (sender_part_retrieved.current_hp / sender_part_retrieved.hp) * (sender_part_retrieved.percent / 100)
 
     switch (part) {
         case .head:
