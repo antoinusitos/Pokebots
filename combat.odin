@@ -423,7 +423,11 @@ update_combat :: proc () {
         }
     }
     else {
-        set_active_button(&game_state.attack_button)
+        log_error("opponent has ", game_state.opponent.robot.abilities[0])
+        log_error("opponent has ", game_state.opponent.robot.abilities[1])
+        log_error("opponent has ", game_state.opponent.robot.abilities[2])
+        log_error("opponent has ", game_state.opponent.robot.abilities[3])
+        apply_damage(player, game_state.opponent, .torso, game_state.opponent.robot.abilities[0].part_type, game_state.opponent.robot.abilities[0])
         end_turn()
     }
 }
