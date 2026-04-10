@@ -10,7 +10,7 @@ start_combat :: proc() {
     game_state.screen_type = .combat
 
     game_state.player_hp_slider = Slider {
-        x = 0,
+        x = 10,
         y = 0,
         width = 150,
         height = 30,
@@ -22,7 +22,7 @@ start_combat :: proc() {
     setup_slider(&game_state.player_hp_slider)
 
     game_state.opponent_hp_slider = Slider {
-        x = WINDOW_WIDTH - 150,
+        x = WINDOW_WIDTH - 160,
         y = 0,
         width = 150,
         height = 30,
@@ -36,7 +36,7 @@ start_combat :: proc() {
     game_state.attack_button = Button {
         x = 10,
         y = WINDOW_HEIGHT - 50,
-        width = 100,
+        width = 150,
         height = 40,
         text = "ATTACK",
         text_size = 20,
@@ -46,14 +46,14 @@ start_combat :: proc() {
     }
     setup_one_button(&game_state.attack_button)
     game_state.attack_button.on_click = proc(button : ^Button) {
-        game_state.combat_flow = .sender
-        set_active_button(&game_state.player_head_button)
+        game_state.combat_flow = .ability
+        set_active_button(&game_state.ability_1_button)
     }
 
     game_state.flee_button = Button {
-        x = 120,
+        x = 170,
         y = WINDOW_HEIGHT - 50,
-        width = 100,
+        width = 150,
         height = 40,
         text = "RUN AWAY",
         text_size = 20,
@@ -64,6 +64,74 @@ start_combat :: proc() {
     setup_one_button(&game_state.flee_button)
     game_state.flee_button.on_click = proc(button : ^Button) {
         leave_combat()
+    }
+
+    game_state.ability_1_button = Button {
+        x = 10,
+        y = WINDOW_HEIGHT - 100,
+        width = 150,
+        height = 40,
+        text = "AB_1",
+        text_size = 20,
+        background_color = rl.WHITE,
+        active = true,
+        right_button = &game_state.ability_2_button,
+        down_button = &game_state.ability_3_button
+    }
+    setup_one_button(&game_state.ability_1_button)
+    game_state.ability_1_button.on_click = proc(button : ^Button) {
+        use_ability(player, 0)
+    }
+
+    game_state.ability_2_button = Button {
+        x = 170,
+        y = WINDOW_HEIGHT - 100,
+        width = 150,
+        height = 40,
+        text = "AB_2",
+        text_size = 20,
+        background_color = rl.WHITE,
+        active = true,
+        left_button = &game_state.ability_1_button,
+        down_button = &game_state.ability_4_button
+    }
+    setup_one_button(&game_state.ability_2_button)
+    game_state.ability_2_button.on_click = proc(button : ^Button) {
+        use_ability(player, 1)
+    }
+
+    game_state.ability_3_button = Button {
+        x = 10,
+        y = WINDOW_HEIGHT - 50,
+        width = 150,
+        height = 40,
+        text = "AB_3",
+        text_size = 20,
+        background_color = rl.WHITE,
+        active = true,
+        right_button = &game_state.ability_4_button,
+        up_button = &game_state.ability_1_button
+    }
+    setup_one_button(&game_state.ability_3_button)
+    game_state.ability_3_button.on_click = proc(button : ^Button) {
+        use_ability(player, 2)
+    }
+
+    game_state.ability_4_button = Button {
+        x = 170,
+        y = WINDOW_HEIGHT - 50,
+        width = 150,
+        height = 40,
+        text = "AB_4",
+        text_size = 20,
+        background_color = rl.WHITE,
+        active = true,
+        left_button = &game_state.ability_3_button,
+        up_button = &game_state.ability_2_button
+    }
+    setup_one_button(&game_state.ability_4_button)
+    game_state.ability_4_button.on_click = proc(button : ^Button) {
+        use_ability(player, 3)
     }
 
     game_state.player_head_button = Button {
@@ -336,9 +404,12 @@ update_combat :: proc () {
         else if (rl.IsKeyPressed(rl.KeyboardKey.R)) {
             switch game_state.combat_flow {
                 case .action:
-                case .sender:
+                case .ability:
                     game_state.combat_flow = .action
                     set_active_button(&game_state.attack_button)
+                case .sender:
+                    game_state.combat_flow = .ability
+                    set_active_button(&game_state.ability_1_button)
                 case .receiver:
                     game_state.combat_flow = .sender
                     set_active_button(&game_state.player_head_button)
@@ -347,45 +418,63 @@ update_combat :: proc () {
         }
 
         if game_state.combat_flow == .attack {
-            game_state.combat_flow = .action
-            game_state.is_player_turn = false
-            apply_damage(game_state.opponent, game_state.opponent_selected_part, game_state.selected_part)
+            apply_damage(game_state.opponent, player, game_state.opponent_selected_part, game_state.selected_part, game_state.selected_ability)
+            end_turn()
         }
     }
     else {
-        //apply_damage(player, .left_arm, .right_arm)
+        set_active_button(&game_state.attack_button)
+        end_turn()
+    }
+}
+
+end_turn :: proc () {
+    if game_state.is_player_turn {
+        game_state.is_player_turn = false
+    }
+    else {
         game_state.is_player_turn = true
         set_active_button(&game_state.attack_button)
+        game_state.combat_flow = .action
     }
 }
 
 draw_combat :: proc () {
     // PLAYER
     game_state.player_hp_slider.draw(&game_state.player_hp_slider)
-    rl.DrawText(fmt.ctprint(player.robot.current_hp, "/", player.robot.hp), 0, 40, 20, rl.WHITE)
+    rl.DrawText(fmt.ctprint(player.robot.current_hp, "/", player.robot.hp), 10, 40, 20, rl.WHITE)
 
-    rl.DrawTextureV(player.robot.head.sprite, {300, 300}, evaluate_part_hp(player.robot.head))
-    rl.DrawTextureV(player.robot.torso.sprite, {300, 300}, evaluate_part_hp(player.robot.torso))
-    rl.DrawTextureV(player.robot.left_arm.sprite, {300, 300}, evaluate_part_hp(player.robot.left_arm))
-    rl.DrawTextureV(player.robot.right_arm.sprite, {300, 300}, evaluate_part_hp(player.robot.right_arm))
-    rl.DrawTextureV(player.robot.left_leg.sprite, {300, 300}, evaluate_part_hp(player.robot.left_leg))
-    rl.DrawTextureV(player.robot.right_leg.sprite, {300, 300}, evaluate_part_hp(player.robot.right_leg))
+    rl.DrawTextureV(robot_head_sprite, {300, 300}, evaluate_part_hp(player.robot.head))
+    rl.DrawTextureV(robot_torso_sprite, {300, 300}, evaluate_part_hp(player.robot.torso))
+    rl.DrawTextureV(robot_left_arm_sprite, {300, 300}, evaluate_part_hp(player.robot.left_arm))
+    rl.DrawTextureV(robot_right_arm_sprite, {300, 300}, evaluate_part_hp(player.robot.right_arm))
+    rl.DrawTextureV(robot_left_leg_sprite, {300, 300}, evaluate_part_hp(player.robot.left_leg))
+    rl.DrawTextureV(robot_right_leg_sprite, {300, 300}, evaluate_part_hp(player.robot.right_leg))
 
     // OPPONENT
     game_state.opponent_hp_slider.draw(&game_state.opponent_hp_slider)
-    rl.DrawText(fmt.ctprint(game_state.opponent.robot.current_hp, "/", game_state.opponent.robot.hp), WINDOW_WIDTH - 150, 40, 20, rl.WHITE)
+    rl.DrawText(fmt.ctprint(game_state.opponent.robot.current_hp, "/", game_state.opponent.robot.hp), WINDOW_WIDTH - 160, 40, 20, rl.WHITE)
 
-    rl.DrawTextureV(game_state.opponent.robot.head.sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.head))
-    rl.DrawTextureV(game_state.opponent.robot.torso.sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.torso))
-    rl.DrawTextureV(game_state.opponent.robot.left_arm.sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.left_arm))
-    rl.DrawTextureV(game_state.opponent.robot.right_arm.sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.right_arm))
-    rl.DrawTextureV(game_state.opponent.robot.left_leg.sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.left_leg))
-    rl.DrawTextureV(game_state.opponent.robot.right_leg.sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.right_leg))
+    rl.DrawTextureV(robot_head_sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.head))
+    rl.DrawTextureV(robot_torso_sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.torso))
+    rl.DrawTextureV(robot_left_arm_sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.left_arm))
+    rl.DrawTextureV(robot_right_arm_sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.right_arm))
+    rl.DrawTextureV(robot_left_leg_sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.left_leg))
+    rl.DrawTextureV(robot_right_leg_sprite, {1200, 300}, evaluate_part_hp(game_state.opponent.robot.right_leg))
 
     switch game_state.combat_flow {
         case .action:
             game_state.attack_button.draw(&game_state.attack_button)
             game_state.flee_button.draw(&game_state.flee_button)
+        case .ability:
+            game_state.ability_1_button.text = string(fmt.ctprint(player.robot.abilities[0].name))
+            game_state.ability_1_button.draw(&game_state.ability_1_button)
+            game_state.ability_2_button.text = string(fmt.ctprint(player.robot.abilities[1].name))
+            game_state.ability_2_button.draw(&game_state.ability_2_button)
+            game_state.ability_3_button.text = string(fmt.ctprint(player.robot.abilities[2].name))
+            game_state.ability_3_button.draw(&game_state.ability_3_button)
+            game_state.ability_4_button.text = string(fmt.ctprint(player.robot.abilities[3].name))
+            game_state.ability_4_button.draw(&game_state.ability_4_button)
         case .sender:
             rl.DrawText(fmt.ctprint("Player Parts"), 10, WINDOW_HEIGHT / 2 - 30, 20, rl.WHITE)
             game_state.player_head_button.text = string(fmt.ctprint(" HEAD (", player.robot.head.current_hp, "/", player.robot.head.hp, ")\n", player.robot.head.percent, "% ->", player.robot.head.attack))
@@ -413,26 +502,67 @@ draw_combat :: proc () {
     
 }
 
-apply_damage :: proc(entity : ^Entity, part : Robot_Part_Type, sender_part : Robot_Part_Type) {
+use_ability :: proc(entity : ^Entity, index : int) {
+    log_error("use ability ", entity.robot.abilities[index])
+    if entity.robot.abilities[index].on_self {
+        entity.robot.abilities[index].use_ability(entity)
+        end_turn()
+    }
+    else {
+        if entity.robot.abilities[index].need_target {
+            game_state.combat_flow = .receiver
+            game_state.selected_part = entity.robot.abilities[index].part_type
+            game_state.selected_ability = entity.robot.abilities[index]
+            set_active_button(&game_state.opponent_head_button)
+        }
+        else {
+
+        }
+    }
+}
+
+heal_entity :: proc(entity : ^Entity) {
+    log_error("heal")
+}
+
+apply_damage :: proc(entity : ^Entity, sender : ^Entity, part : Robot_Part_Type, sender_part : Robot_Part_Type, ability : Ability) {
     damage : f32 = 0
 
     sender_part_retrieved : Robot_Part
 
     switch sender_part {
         case .head:
-            sender_part_retrieved = entity.robot.head
+            sender_part_retrieved = sender.robot.head
         case .torso:
-            sender_part_retrieved = entity.robot.torso
+            sender_part_retrieved = sender.robot.torso
         case .left_arm:
-            sender_part_retrieved = entity.robot.left_arm
+            sender_part_retrieved = sender.robot.left_arm
         case .right_arm:
-            sender_part_retrieved = entity.robot.right_arm
+            sender_part_retrieved = sender.robot.right_arm
         case .left_leg:
-            sender_part_retrieved = entity.robot.left_leg
+            sender_part_retrieved = sender.robot.left_leg
         case .right_leg:
-            sender_part_retrieved = entity.robot.right_leg
+            sender_part_retrieved = sender.robot.right_leg
     }
-    damage = sender_part_retrieved.attack * (sender_part_retrieved.current_hp / sender_part_retrieved.hp) * (sender_part_retrieved.percent / 100)
+
+    receiver_part_retrieved : Robot_Part
+
+    switch part {
+        case .head:
+            receiver_part_retrieved = entity.robot.head
+        case .torso:
+            receiver_part_retrieved = entity.robot.torso
+        case .left_arm:
+            receiver_part_retrieved = entity.robot.left_arm
+        case .right_arm:
+            receiver_part_retrieved = entity.robot.right_arm
+        case .left_leg:
+            receiver_part_retrieved = entity.robot.left_leg
+        case .right_leg:
+            receiver_part_retrieved = entity.robot.right_leg
+    }
+
+    damage = (sender_part_retrieved.attack * (sender_part_retrieved.percent / 100) - receiver_part_retrieved.defense * (receiver_part_retrieved.percent / 100)) * ability.power
 
     switch (part) {
         case .head:

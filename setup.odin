@@ -67,10 +67,14 @@ setup_player :: proc(entity: ^Entity) {
 		f32(entity.robot.left_leg.hp) + 
 		f32(entity.robot.right_leg.hp)
 	entity.robot.current_hp = entity.robot.hp
-	entity.robot.abilities[0] = entity.robot.head.abilities[0]
-	entity.robot.abilities[1] = entity.robot.head.abilities[1]
-	entity.robot.abilities[2] = entity.robot.torso.abilities[0]
-	entity.robot.abilities[3] = entity.robot.torso.abilities[1]
+	entity.robot.abilities[0] = entity.robot.left_arm.abilities[0]
+	entity.robot.abilities[0].part_type = .left_arm
+	entity.robot.abilities[1] = entity.robot.left_arm.abilities[1]
+	entity.robot.abilities[1].part_type = .left_arm
+	entity.robot.abilities[2] = entity.robot.left_leg.abilities[0]
+	entity.robot.abilities[2].part_type = .left_leg
+	entity.robot.abilities[3] = entity.robot.left_leg.abilities[1]
+	entity.robot.abilities[3].part_type = .left_leg
 
 	entity.entity_draw_info = Entity_Draw_Info {
 		use_sprite = true,

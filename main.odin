@@ -82,7 +82,7 @@ main :: proc() {
 
     log_error(player.robot.abilities)
 
-    //start_combat()
+    start_combat()
 
 	for !game_state.want_to_quit && !rl.WindowShouldClose() {
 		rl.BeginDrawing()

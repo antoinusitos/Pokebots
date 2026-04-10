@@ -51,149 +51,263 @@ Taunt → attire attaques
 
 
 Strike := Ability {
-	name = "Strike"
+	name = "Strike",
+	need_target = true,
+	on_self = false,
+	power = 1,
 }
 
 Light_Shot := Ability {
-	name = "Light Shot"
+	name = "Light Shot",
+	need_target = true,
+	on_self = false,
+	power = 0.9,
 }
 
 Heavy_Strike := Ability {
-	name = "Heavy Strike"
+	name = "Heavy Strike",
+	need_target = true,
+	on_self = false,
+	power = 1.5,
 }
 
 Charge := Ability {
-	name = "Charge"
+	name = "Charge",
+	need_target = false,
+	on_self = true,
+	power = 1.8,
 }
 
 Double_Strike := Ability {
-	name = "Double Strike"
+	name = "Double Strike",
+	need_target = true,
+	on_self = false,
+	power = 0.75, // x2
 }
 
 Quick_Attack := Ability {
-	name = "Quick Attack"
+	name = "Quick Attack",
+	need_target = true,
+	on_self = false,
+	power = 0.8,
 }
 
 Precision_Shot := Ability {
-	name = "Precision Shot"
+	name = "Precision Shot",
+	need_target = true,
+	on_self = false,
+	power = 1.1,
 }
 
 Guard := Ability {
-	name = "Guard"
+	name = "Guard",
+	need_target = false,
+	on_self = true,
+	power = 0.5,
 }
 
 Shield := Ability {
-	name = "Shield"
+	name = "Shield",
+	need_target = false,
+	on_self = true,
+	power = 0.7,
 }
 
 Protect := Ability {
-	name = "Protect"
+	name = "Protect",
+	need_target = true,
+	on_self = true,
+	power = 1,
 }
 
 Anchor := Ability {
-	name = "Anchor"
+	name = "Anchor",
+	need_target = false,
+	on_self = true,
+	power = 0.6,
 }
 
 Counter := Ability {
-	name = "Counter"
+	name = "Counter",
+	need_target = false,
+	on_self = false,
+	power = 0.75,
 }
 
 Sprint := Ability {
-	name = "Sprint"
+	name = "Sprint",
+	need_target = false,
+	on_self = true,
+	use_ability = proc(entity : ^Entity) {
+		heal_entity(entity)
+	},
+	power = 1.2,
 }
 
 Dash := Ability {
-	name = "Dash"
+	name = "Dash",
+	need_target = false,
+	on_self = true,
+	power = 1,
 }
 
 Dodge := Ability {
-	name = "Dodge"
+	name = "Dodge",
+	need_target = false,
+	on_self = true,
+	power = 0.5,
 }
 
 Quick_Dodge := Ability {
-	name = "Quick Dodge"
+	name = "Quick Dodge",
+	need_target = false,
+	on_self = true,
+	power = 0.7,
 }
 
 Reposition := Ability {
-	name = "Reposition"
+	name = "Reposition",
+	need_target = false,
+	on_self = true,
+	power = 1,
 }
 
 Scan := Ability {
-	name = "Scan"
+	name = "Scan",
+	need_target = false,
+	on_self = false,
+	power = 0,
 }
 
 Targeting := Ability {
-	name = "Targeting"
+	name = "Targeting",
+	need_target = false,
+	on_self = true,
+	power = 1.2,
 }
 
 Critical_Targeting := Ability {
-	name = "Critical Targeting"
+	name = "Critical Targeting",
+	need_target = false,
+	on_self = true,
+	power = 20,
 }
 
 Weakness_Scan := Ability {
-	name = "Weakness Scan"
+	name = "Weakness Scan",
+	need_target = false,
+	on_self = true,
+	power = 1.25,
 }
 
 Unbalance := Ability {
-	name = "Unbalance"
+	name = "Unbalance",
+	need_target = false,
+	on_self = true,
+	power = -30,
 }
 
 Hack := Ability {
-	name = "Hack"
+	name = "Hack",
+	need_target = false,
+	on_self = false,
+	power = -25,
 }
 
 Jam := Ability {
-	name = "Jam"
+	name = "Jam",
+	need_target = false,
+	on_self = false,
+	power = -30,
 }
 
 Stabilize := Ability {
-	name = "Stabilize"
+	name = "Stabilize",
+	need_target = false,
+	on_self = true,
+	power = 0,
 }
 
 Resistance := Ability {
-	name = "Resistance"
+	name = "Resistance",
+	need_target = false,
+	on_self = true,
+	power = -50,
 }
 
 Terrain_Scan := Ability {
-	name = "Terrain Scan"
+	name = "Terrain Scan",
+	need_target = false,
+	on_self = true,
+	power = 15,
 }
 
 Repair := Ability {
-	name = "Repair"
+	name = "Repair",
+	need_target = true,
+	on_self = true,
+	power = 15,
 }
 
 Energy_Boost := Ability {
-	name = "Energy Boost"
+	name = "Energy Boost",
+	need_target = false,
+	on_self = true,
+	power = 20,
 }
 
 Recharge := Ability {
-	name = "Recharge"
+	name = "Recharge",
+	need_target = false,
+	on_self = true,
+	power = 0,
 }
 
 Redistribution := Ability {
-	name = "Redistribution"
+	name = "Redistribution",
+	need_target = false,
+	on_self = true,
+	power = 0,
 }
 
 Overload := Ability {
-	name = "Overload"
+	name = "Overload",
+	need_target = false,
+	on_self = true,
+	power = 30,
 }
 
 Lighten := Ability {
-	name = "Lighten"
+	name = "Lighten",
+	need_target = false,
+	on_self = true,
+	power = 20,
 }
 
 Fortify := Ability {
-	name = "Fortify"
+	name = "Fortify",
+	need_target = false,
+	on_self = true,
+	power = 25,
 }
 
 Auto_Repair := Ability {
-	name = "Auto-Repair"
+	name = "Auto-Repair",
+	need_target = false,
+	on_self = true,
+	power = 5,
 }
 
 Last_Stand := Ability {
-	name = "Last Stand"
+	name = "Last Stand",
+	need_target = false,
+	on_self = true,
+	power = 1,
 }
 
 Taunt := Ability {
-	name = "Taunt"
+	name = "Taunt",
+	need_target = false,
+	on_self = true,
+	power = 0,
 }

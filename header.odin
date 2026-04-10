@@ -30,15 +30,24 @@ Game_State :: struct {
 	combat_flow : Combat_Flow_Type,
 	selected_part : Robot_Part_Type,
 	opponent_selected_part : Robot_Part_Type,
+	selected_ability : Ability,
 	current_button : ^Button,
+
 	attack_button : Button,
 	flee_button : Button,
+
+	ability_1_button : Button,
+	ability_2_button : Button,
+	ability_3_button : Button,
+	ability_4_button : Button,
+
 	player_head_button : Button,
 	player_torso_button : Button,
 	player_left_arm_button : Button,
 	player_right_arm_button : Button,
 	player_left_leg_button : Button,
 	player_right_leg_button : Button,
+
 
 	opponent_head_button : Button,
 	opponent_torso_button : Button,
@@ -127,7 +136,8 @@ Robot_Part :: struct {
 	attack : f32,
 	defense : f32,
 	speed : f32,
-	abilities : []Ability
+	abilities : []Ability,
+	over_heat : int,
 }
 
 Robot_Part_Type :: enum {
@@ -235,6 +245,7 @@ Scene :: struct {
 
 Combat_Flow_Type :: enum {
 	action,
+	ability,
 	sender,
 	receiver,
 	attack
@@ -242,6 +253,19 @@ Combat_Flow_Type :: enum {
 
 Ability :: struct {
 	name : string,
+	ability_type : Ability_Type,
+	need_target : bool,
+	on_self : bool,
+	part_type : Robot_Part_Type,
+	use_ability : proc(^Entity),
+	power : f32,
+}
+
+Ability_Type :: enum {
+	attack,
+	defense,
+	mobility,
+	energy
 }
 
 log_error :: fmt.println
