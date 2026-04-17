@@ -21,6 +21,20 @@ Game_State :: struct {
 
 	current_door : ^Entity,
 
+	input_type : Input_Type,
+
+	// SIDE MENU
+	resume_button : Button,
+	robot_info_button : Button,
+
+	// ROBOT MENU
+	robot_abilities_buttons : [dynamic]Button,
+	robot_current_abilities_buttons : [dynamic]Button,
+	index_selected_ability : int,
+	index_selected_current_ability : int,
+	selected_ability_to_change : Ability,
+	selected_current_ability_to_change : Ability,
+
 
 	// COMBAT
 	player_hp_slider : Slider,
@@ -47,7 +61,6 @@ Game_State :: struct {
 	player_right_arm_button : Button,
 	player_left_leg_button : Button,
 	player_right_leg_button : Button,
-
 
 	opponent_head_button : Button,
 	opponent_torso_button : Button,
@@ -137,7 +150,7 @@ Robot_Part :: struct {
 	defense : f32,
 	speed : f32,
 	abilities : []Ability,
-	over_heat : int,
+	over_heat : f32,
 }
 
 Robot_Part_Type :: enum {
@@ -178,12 +191,14 @@ Screen_Type :: enum {
 	game,
 	combat,
 	menu,
+	robot_menu,
 }
 
 Input_Type :: enum {
 	game,
 	dialog,
-	combat
+	combat,
+	side_menu
 }
 
 Cell :: struct {
@@ -253,12 +268,14 @@ Combat_Flow_Type :: enum {
 
 Ability :: struct {
 	name : string,
+	desc : string,
 	ability_type : Ability_Type,
 	need_target : bool,
 	on_self : bool,
 	part_type : Robot_Part_Type,
 	use_ability : proc(^Entity),
 	power : f32,
+	base_heat : f32,
 }
 
 Ability_Type :: enum {
@@ -280,6 +297,12 @@ target : rl.RenderTexture2D
 
 floor_sprite : rl.Texture2D
 door_sprite : rl.Texture2D
+
+player_idle_sprite : rl.Texture2D
+player_walk1_sprite : rl.Texture2D
+player_walk2_sprite : rl.Texture2D
+player_walk_top1_sprite : rl.Texture2D
+player_walk_top2_sprite : rl.Texture2D
 
 robot_head_sprite : rl.Texture2D
 robot_torso_sprite : rl.Texture2D

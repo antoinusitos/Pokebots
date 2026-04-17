@@ -361,21 +361,12 @@ leave_combat :: proc() {
     game_state.screen_type = .game
 }
 
-set_active_button :: proc(button : ^Button) {
-    if game_state.current_button != nil {
-        game_state.current_button.background_color = rl.WHITE
-    }
-
-    button.background_color = rl.RED
-    game_state.current_button = button
-}
-
 update_combat :: proc () {
     game_state.player_hp_slider.percent = player.robot.current_hp / player.robot.hp
     game_state.opponent_hp_slider.percent = game_state.opponent.robot.current_hp / game_state.opponent.robot.hp
 
     if game_state.is_player_turn {
-        if (rl.IsKeyPressed(rl.KeyboardKey.Q)) {
+        if (rl.IsKeyPressed(rl.KeyboardKey.A)) {
             if game_state.current_button.left_button != nil {
                 set_active_button(game_state.current_button.left_button)
             }
@@ -385,7 +376,7 @@ update_combat :: proc () {
                 set_active_button(game_state.current_button.right_button)
             }
         }
-        else if (rl.IsKeyPressed(rl.KeyboardKey.Z)) {
+        else if (rl.IsKeyPressed(rl.KeyboardKey.W)) {
             if game_state.current_button.up_button != nil {
                 set_active_button(game_state.current_button.up_button)
             }
@@ -529,6 +520,78 @@ heal_entity :: proc(entity : ^Entity) {
     log_error("heal")
 }
 
+apply_boost_damage :: proc(entity : ^Entity, sender_part : Robot_Part_Type, ability : Ability) {
+    sender_part_retrieved : Robot_Part
+
+    switch sender_part {
+        case .head:
+            sender_part_retrieved = entity.robot.head
+        case .torso:
+            sender_part_retrieved = entity.robot.torso
+        case .left_arm:
+            sender_part_retrieved = entity.robot.left_arm
+        case .right_arm:
+            sender_part_retrieved = entity.robot.right_arm
+        case .left_leg:
+            sender_part_retrieved = entity.robot.left_leg
+        case .right_leg:
+            sender_part_retrieved = entity.robot.right_leg
+    }
+
+    if sender_part_retrieved.percent <= 100 {
+        return
+    }
+
+    sender_part_retrieved.over_heat += ability.base_heat * (sender_part_retrieved.percent / 100)
+
+    damage := (sender_part_retrieved.percent - 100) * SELF_DAMAGE_RATIO * ability.power
+
+    switch (sender_part) {
+        case .head:
+            entity.robot.head.current_hp -= damage
+            entity.robot.current_hp -= entity.robot.head.hp_consommation * damage
+            if entity.robot.head.current_hp < 0 {
+                entity.robot.head.current_hp = 0
+                leave_combat()
+            }
+        case .torso:
+            entity.robot.torso.current_hp -= damage
+            entity.robot.current_hp -= entity.robot.torso.hp_consommation * damage
+            if entity.robot.torso.current_hp < 0 {
+                entity.robot.torso.current_hp = 0
+            }
+        case .left_arm:
+            entity.robot.left_arm.current_hp -= damage
+            entity.robot.current_hp -= entity.robot.left_arm.hp_consommation * damage
+            if entity.robot.left_arm.current_hp < 0 {
+                entity.robot.left_arm.current_hp = 0
+            }
+        case .right_arm:
+            entity.robot.right_arm.current_hp -= damage
+            entity.robot.current_hp -= entity.robot.right_arm.hp_consommation * damage
+            if entity.robot.right_arm.current_hp < 0 {
+                entity.robot.right_arm.current_hp = 0
+            }
+        case .left_leg:
+            entity.robot.left_leg.current_hp -= damage
+            entity.robot.current_hp -= entity.robot.left_leg.hp_consommation * damage
+            if entity.robot.left_leg.current_hp < 0 {
+                entity.robot.left_leg.current_hp = 0
+            }
+        case .right_leg:
+            entity.robot.right_leg.current_hp -= damage
+            entity.robot.current_hp -= entity.robot.right_leg.hp_consommation * damage
+            if entity.robot.right_leg.current_hp < 0 {
+                entity.robot.right_leg.current_hp = 0
+            }
+    }
+
+    if entity.robot.current_hp <= 0 {
+        entity.robot.current_hp = 0
+        leave_combat()
+    }
+}
+
 apply_damage :: proc(entity : ^Entity, sender : ^Entity, part : Robot_Part_Type, sender_part : Robot_Part_Type, ability : Ability) {
     damage : f32 = 0
 
@@ -612,6 +675,8 @@ apply_damage :: proc(entity : ^Entity, sender : ^Entity, part : Robot_Part_Type,
         entity.robot.current_hp = 0
         leave_combat()
     }
+
+    apply_boost_damage(sender, sender_part, ability)
 }
 
 evaluate_part_hp :: proc(part : Robot_Part) -> rl.Color {

@@ -27,47 +27,26 @@ main :: proc() {
 	    zoom = 1
 	}
 
-    floor_sprite = rl.LoadTexture("Assets/test_floor.png")
-    door_sprite = rl.LoadTexture("Assets/door.png")
-    atlas = rl.LoadTexture("Assets/atlas.png")
+    log_error("init_ressources")
+    init_ressources()
 
-    robot_head_sprite = rl.LoadTexture("Assets/Robot_Head.png")
-    robot_torso_sprite = rl.LoadTexture("Assets/Robot_Torso.png")
-    robot_left_arm_sprite = rl.LoadTexture("Assets/Robot_Left_Arm.png")
-    robot_right_arm_sprite = rl.LoadTexture("Assets/Robot_Right_Arm.png")
-    robot_left_leg_sprite = rl.LoadTexture("Assets/Robot_Left_Leg.png")
-    robot_right_leg_sprite = rl.LoadTexture("Assets/Robot_Right_Leg.png")
-
-    //head_test.sprite = robot_head_sprite
-    //torso_test.sprite = robot_torso_sprite
-    //left_arm_test.sprite = robot_left_arm_sprite
-    //right_arm_test.sprite = robot_right_arm_sprite
-    //left_leg_test.sprite = robot_left_leg_sprite
-    //right_leg_test.sprite = robot_right_leg_sprite
-   
-    load_level("Assets/lvl_intro.tmj", &main_world)
-    load_level("Assets/house1.tmj", &house_1)
-
-    game_state.current_scene = &main_world
+    log_error("init_game")
+    init_game()
 
     log_error("init done.")
 
-    player = entity_create(.player)
-    player.cell_x = 1
-    player.cell_y = 1
-    player.position = {f32(player.cell_x)  * 16, f32(player.cell_y) * 16}
-    player.direction = .down
+    post_init_game()
 
     player.sprite_idle = { 
-        { sprite = rl.LoadTexture("Assets/player_idle.png"), length = 1}
+        { sprite = player_idle_sprite, length = 1}
     }
     player.sprite_walk = { 
-        { sprite = rl.LoadTexture("Assets/player_walk1.png"), length = 0.15},
-        { sprite = rl.LoadTexture("Assets/player_walk2.png"), length = 0.15}
+        { sprite = player_walk1_sprite, length = 0.15},
+        { sprite = player_walk2_sprite, length = 0.15}
     }
     player.sprite_walk_top = { 
-        { sprite = rl.LoadTexture("Assets/player_walk_top1.png"), length = 0.15},
-        { sprite = rl.LoadTexture("Assets/player_walk_top2.png"), length = 0.15}
+        { sprite = player_walk_top1_sprite, length = 0.15},
+        { sprite = player_walk_top2_sprite, length = 0.15}
     }
     player.sprite_walk_left = { 
         { sprite = rl.LoadTexture("Assets/player_walk_left1.png"), length = 0.15},
@@ -78,11 +57,7 @@ main :: proc() {
         { sprite = rl.LoadTexture("Assets/player_walk_right2.png"), length = 0.15}
     }
 
-    game_state.screen_type = .game
-
-    log_error(player.robot.abilities)
-
-    start_combat()
+    //start_combat()
 
 	for !game_state.want_to_quit && !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -108,21 +83,9 @@ update :: proc() {
             update_combat()
         case .menu :
             update_Menu()
+        case .robot_menu :
+            update_robot_menu()
     }
-}
-
-update_game :: proc () {
-    prev_pos := player.position
-
-    player.update(player)
-
-    for d := 0; d < len(game_state.current_scene.doors); d += 1 {
-        if collide(player, game_state.current_scene.doors[d]) == 2 {
-            player.position = prev_pos
-        }
-    }
-
-    camera.target = {player.position.x, player.position.y}
 }
 
 update_Menu :: proc () {
@@ -138,104 +101,34 @@ draw :: proc() {
             draw_combat()
         case .menu :
             draw_Menu()
+        case .robot_menu :
+            draw_robot_menu()
     }
-}
-
-draw_game :: proc () {
-    // --- Calcul du scale entier ---
-    scaleX := WINDOW_WIDTH / DRAW_WIDTH
-    scaleY := WINDOW_HEIGHT / DRAW_HEIGHT
-
-    scale := scaleX
-    if scaleY < scale {
-        scale = scaleY
-    }
-    if scale < 1 {
-        scale = 1
-    }
-
-    // Taille finale affichée
-    destWidth  := DRAW_WIDTH * scale
-    destHeight := DRAW_HEIGHT * scale
-
-    // Centrage (bandes noires)
-    offsetX := (WINDOW_WIDTH  - destWidth)  / 2
-    offsetY := (WINDOW_HEIGHT - destHeight) / 2
-
-     // --- Rendu interne ---
-    rl.BeginTextureMode(target)
-    rl.ClearBackground(rl.BLACK)
-
-    rl.BeginMode2D(camera)
-
-    to_draw : [dynamic]Entity_Draw_Info
-
-    for d in game_state.current_scene.static_entity_draw_infos {
-        append(&to_draw, d)
-    }
-
-    index := 0
-    injected := false
-    for d in to_draw {
-        if (d.pos.y - 1) * 16 > player.entity_draw_info.pos.y {
-            inject_at(&to_draw, index, player.entity_draw_info)
-            injected = true
-            break
-        }
-        index += 1
-    }
-
-    if !injected {
-        append(&to_draw, player.entity_draw_info)
-    }
-
-    if len(game_state.current_scene.roof_entity_draw_infos) > 0 {
-        for d in game_state.current_scene.roof_entity_draw_infos {
-            append(&to_draw, d)
-        }    
-    }
-
-    for d in to_draw {
-        if d.use_sprite {
-            rl.DrawTextureV(d.sprite, d.pos + d.offset, d.color)
-        }
-        else {
-            rl.DrawTextureRec(atlas, {d.sprite_pos.x + d.offset.x, d.sprite_pos.y + d.offset.y, d.size.x, d.size.y}, {d.pos.x * 16, d.pos.y * 16}, d.color)
-        }
-    }
-
-    for d := 0; d < len(game_state.current_scene.doors); d += 1 {
-        game_state.current_scene.doors[d].draw(game_state.current_scene.doors[d])
-    }
-
-    rl.EndMode2D()
-
-    rl.EndTextureMode()
-
-    // --- Rendu écran ---
-    rl.BeginDrawing()
-    rl.ClearBackground(rl.DARKGRAY)
-
-    rl.DrawTexturePro(
-        target.texture,
-        rl.Rectangle{0, 0, DRAW_WIDTH, -DRAW_HEIGHT}, // flip Y
-        rl.Rectangle{
-            f32(offsetX),
-            f32(offsetY),
-            f32(destWidth),
-            f32(destHeight),
-        },
-        rl.Vector2{0, 0},
-        0,
-        rl.WHITE,
-    )
-
-    if game_state.transitionning {
-        transition()
-    }
-
 }
 
 draw_Menu :: proc () {
     
 }
+
+ init_ressources :: proc() {
+    floor_sprite = rl.LoadTexture("Assets/test_floor.png")
+    door_sprite = rl.LoadTexture("Assets/door.png")
+    atlas = rl.LoadTexture("Assets/atlas.png")
+
+    player_idle_sprite = rl.LoadTexture("Assets/player_idle.png")
+    player_walk1_sprite = rl.LoadTexture("Assets/player_walk1.png")
+    player_walk2_sprite = rl.LoadTexture("Assets/player_walk2.png")
+    player_walk_top1_sprite = rl.LoadTexture("Assets/player_walk_top1.png")
+    player_walk_top2_sprite = rl.LoadTexture("Assets/player_walk_top2.png")
+
+
+    robot_head_sprite = rl.LoadTexture("Assets/Robot_Head.png")
+    robot_torso_sprite = rl.LoadTexture("Assets/Robot_Torso.png")
+    robot_left_arm_sprite = rl.LoadTexture("Assets/Robot_Left_Arm.png")
+    robot_right_arm_sprite = rl.LoadTexture("Assets/Robot_Right_Arm.png")
+    robot_left_leg_sprite = rl.LoadTexture("Assets/Robot_Left_Leg.png")
+    robot_right_leg_sprite = rl.LoadTexture("Assets/Robot_Right_Leg.png")
+   
+    load_level("Assets/lvl_intro.tmj", &main_world)
+    load_level("Assets/house1.tmj", &house_1)
+ }

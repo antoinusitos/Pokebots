@@ -1,8 +1,6 @@
 doing :
-- add robot parts preset
-- add abilities
 - finish combat
-
+- allow to select abilities
 
 todo :
 - rework sprite sorting

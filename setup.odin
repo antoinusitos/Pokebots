@@ -58,6 +58,26 @@ setup_player :: proc(entity: ^Entity) {
 	entity.static = false
 	entity.was_ordered = false
 
+	entity.sprite_idle = { 
+        { sprite = rl.LoadTexture("Assets/player_idle.png"), length = 1}
+    }
+    entity.sprite_walk = { 
+        { sprite = rl.LoadTexture("Assets/player_walk1.png"), length = 0.15},
+        { sprite = rl.LoadTexture("Assets/player_walk2.png"), length = 0.15}
+    }
+    entity.sprite_walk_top = { 
+        { sprite = rl.LoadTexture("Assets/player_walk_top1.png"), length = 0.15},
+        { sprite = rl.LoadTexture("Assets/player_walk_top2.png"), length = 0.15}
+    }
+    entity.sprite_walk_left = { 
+        { sprite = rl.LoadTexture("Assets/player_walk_left1.png"), length = 0.15},
+        { sprite = rl.LoadTexture("Assets/player_walk_left2.png"), length = 0.15}
+    }
+    entity.sprite_walk_right = { 
+        { sprite = rl.LoadTexture("Assets/player_walk_right1.png"), length = 0.15},
+        { sprite = rl.LoadTexture("Assets/player_walk_right2.png"), length = 0.15}
+    }
+
 	entity.robot = starter_balanced
 	entity.robot.hp = 
 		f32(entity.robot.head.hp) + 
@@ -93,6 +113,10 @@ setup_player :: proc(entity: ^Entity) {
 			return
 		}
 
+		if game_state.input_type == .side_menu {
+			return
+		}
+
 		movement : rl.Vector2
 
 		if (!entity.moving)
@@ -106,7 +130,7 @@ setup_player :: proc(entity: ^Entity) {
 				entity.target_cell_y = entity.cell_y + 1
 				entity.moving = true
 			}
-			else if (rl.IsKeyDown(rl.KeyboardKey.Z)) {
+			else if (rl.IsKeyDown(rl.KeyboardKey.W)) {
 				entity.target_cell_y = entity.cell_y - 1
 				entity.moving = true
 			}
@@ -114,7 +138,7 @@ setup_player :: proc(entity: ^Entity) {
 				entity.target_cell_x = entity.cell_x + 1
 				entity.moving = true
 			}
-			else if (rl.IsKeyDown(rl.KeyboardKey.Q)) {
+			else if (rl.IsKeyDown(rl.KeyboardKey.A)) {
 				entity.target_cell_x = entity.cell_x - 1
 				entity.moving = true
 			}

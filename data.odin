@@ -18,7 +18,6 @@ MAX_ENTITIES :: 1024
 TRANSITION_TIME :: 1.0
 
 SELF_DAMAGE_RATIO :: 0.2
-// SelfDamage = ( % − 100 ) × SELF_DAMAGE_RATIO
 // SelfDamage = ( % − 100 ) × SELF_DAMAGE_RATIO × puissance capacité
 // Speed robot = sum (speed × % × hp restant / hp max)
 

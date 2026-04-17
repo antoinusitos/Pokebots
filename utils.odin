@@ -30,6 +30,10 @@ Button :: struct {
 	disabled : bool,
 	active : bool, // don't update or draw
 
+	//ABILITY
+	button_index : int,
+	button_ability : Ability,
+
 	up_button : ^Button,
 	down_button : ^Button,
 	left_button : ^Button,
@@ -536,4 +540,14 @@ load_level :: proc(level_name : string, scene : ^Scene) {
             append(&scene.cells, cell)
         }
     }
+}
+
+set_active_button :: proc(button : ^Button) {
+    if game_state.current_button != nil {
+        game_state.current_button.background_color = rl.WHITE
+    }
+
+    button.background_color = rl.RED
+    game_state.current_button = button
+	button.on_hover(button)
 }
