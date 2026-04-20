@@ -36,6 +36,11 @@ Game_State :: struct {
 	selected_current_ability_to_change : Ability,
 
 
+	//TEST
+	test_npc : ^Entity,
+
+
+
 	// COMBAT
 	player_hp_slider : Slider,
 	opponent_hp_slider : Slider,
@@ -255,6 +260,7 @@ Scene :: struct {
 	cells : [dynamic]Cell,
 	doors : [dynamic]^Entity,
 	static_entity_draw_infos : [dynamic]Entity_Draw_Info,
+	dynamic_entity_draw_infos : [dynamic]Entity_Draw_Info,
 	roof_entity_draw_infos : [dynamic]Entity_Draw_Info
 }
 
@@ -285,6 +291,28 @@ Ability_Type :: enum {
 	energy
 }
 
+Speach :: struct {
+	dialogs : []Dialog_Base
+}
+
+Dialog_Base :: struct {
+
+}
+
+Dialog_Text :: struct {
+	using dialog_base: Dialog_Base,
+
+	text : string
+}
+
+Dialog_Condition :: struct {
+	using dialog_base: Dialog_Base,
+
+	condition : bool,
+	true_condition : Dialog_Base,
+	false_condition : Dialog_Base,
+}
+
 log_error :: fmt.println
 
 game_state: Game_State
@@ -303,6 +331,10 @@ player_walk1_sprite : rl.Texture2D
 player_walk2_sprite : rl.Texture2D
 player_walk_top1_sprite : rl.Texture2D
 player_walk_top2_sprite : rl.Texture2D
+player_walk_left1 : rl.Texture2D
+player_walk_left2 : rl.Texture2D
+player_walk_right1 : rl.Texture2D
+player_walk_right2 : rl.Texture2D
 
 robot_head_sprite : rl.Texture2D
 robot_torso_sprite : rl.Texture2D

@@ -49,12 +49,12 @@ main :: proc() {
         { sprite = player_walk_top2_sprite, length = 0.15}
     }
     player.sprite_walk_left = { 
-        { sprite = rl.LoadTexture("Assets/player_walk_left1.png"), length = 0.15},
-        { sprite = rl.LoadTexture("Assets/player_walk_left2.png"), length = 0.15}
+        { sprite = player_walk_left1, length = 0.15},
+        { sprite = player_walk_left2, length = 0.15}
     }
     player.sprite_walk_right = { 
-        { sprite = rl.LoadTexture("Assets/player_walk_right1.png"), length = 0.15},
-        { sprite = rl.LoadTexture("Assets/player_walk_right2.png"), length = 0.15}
+        { sprite = player_walk_right1, length = 0.15},
+        { sprite = player_walk_right2, length = 0.15}
     }
 
     //start_combat()
@@ -120,6 +120,10 @@ draw_Menu :: proc () {
     player_walk2_sprite = rl.LoadTexture("Assets/player_walk2.png")
     player_walk_top1_sprite = rl.LoadTexture("Assets/player_walk_top1.png")
     player_walk_top2_sprite = rl.LoadTexture("Assets/player_walk_top2.png")
+    player_walk_left1 = rl.LoadTexture("Assets/player_walk_left1.png")
+    player_walk_left2 = rl.LoadTexture("Assets/player_walk_left2.png")
+    player_walk_right1 = rl.LoadTexture("Assets/player_walk_right1.png")
+    player_walk_right2 = rl.LoadTexture("Assets/player_walk_right2.png")
 
 
     robot_head_sprite = rl.LoadTexture("Assets/Robot_Head.png")

@@ -315,6 +315,14 @@ setup_npc :: proc(entity: ^Entity) {
 
 	entity.robot.current_hp = entity.robot.hp
 
+	entity.entity_draw_info = Entity_Draw_Info {
+		use_sprite = true,
+		pos = entity.position,
+		size = {16, 16},
+		color = rl.WHITE,
+		offset = {0, 0}
+	}
+
 	entity.update = proc(entity: ^Entity) {
 	}
 	entity.on_trigger_enter = proc(self : ^Entity, entity_touching: ^Entity) {

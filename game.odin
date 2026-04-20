@@ -50,7 +50,14 @@ init_game :: proc () {
 }
 
  post_init_game :: proc () {
-    
+    game_state.test_npc = entity_create(.npc)
+    game_state.test_npc.cell_x = 2
+    game_state.test_npc.cell_y = 1
+    game_state.current_scene.cells[game_state.test_npc.cell_y * game_state.current_scene.size_x + game_state.test_npc.cell_x].entity = game_state.test_npc
+    game_state.test_npc.position = {f32(game_state.test_npc.cell_x)  * 16, f32(game_state.test_npc.cell_y) * 16}
+    game_state.test_npc.direction = .down
+    game_state.test_npc.sprite = player_idle_sprite
+    append(&game_state.current_scene.dynamic_entity_draw_infos, game_state.test_npc.entity_draw_info)
  }
 
 update_game :: proc () {
@@ -99,6 +106,28 @@ update_game :: proc () {
             
         }
     }
+    else {
+        if (rl.IsKeyPressed(rl.KeyboardKey.E)) {
+            switch player.direction {
+                case .top :
+                    if game_state.current_scene.cells[(player.cell_y - 1) * game_state.current_scene.size_x + player.cell_x].entity != nil {
+                        log_error("Found an entity")
+                    }
+                case .down :
+                    if game_state.current_scene.cells[(player.cell_y + 1) * game_state.current_scene.size_x + player.cell_x].entity != nil {
+                        log_error("Found an entity")
+                    }
+                case .right :
+                    if game_state.current_scene.cells[player.cell_y * game_state.current_scene.size_x + player.cell_x + 1].entity != nil {
+                        log_error("Found an entity")
+                    }
+                case .left :
+                    if game_state.current_scene.cells[player.cell_y * game_state.current_scene.size_x + player.cell_x - 1].entity != nil {
+                        log_error("Found an entity")
+                    }
+            }
+        }
+    }
 }
 
 draw_game :: proc () {
@@ -131,6 +160,10 @@ draw_game :: proc () {
     to_draw : [dynamic]Entity_Draw_Info
 
     for d in game_state.current_scene.static_entity_draw_infos {
+        append(&to_draw, d)
+    }
+
+    for d in game_state.current_scene.dynamic_entity_draw_infos {
         append(&to_draw, d)
     }
 
